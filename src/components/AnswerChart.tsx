@@ -26,7 +26,7 @@ const colors = [
 ];
 
 const barSize = [
-  "w-[0%]",
+  "w-[0.1%]",
   "w-[1%]",
   "w-[2%]",
   "w-[3%]",
@@ -146,16 +146,23 @@ export default function AnswerChart({
       <h3 className="font-extrabold text-2xl">Answers</h3>
       {answers.map((answer: number[], i: number) => (
         <div key={i}>
-          <h3 className="font-semibold font-serif mt-2">
+          <h3 className="font-semibold font-serif mt-2 ml-2">
             {questions[i].question}
           </h3>
-          <div
-            className={`flex flex-row ${pctg(answer[i])} ${
-              colors[i]
-            } h-8 rounded-lg relative`}
-          >
-            <span className="absolute top-1 left-2">{answer[i]}</span>
-          </div>
+          {answer.map((ans, j) => (
+            <div className="flex flex-col ml-4">
+              <div key={j} className="flex flex-row items-center mt-3">
+                <span className="font-semibold">{questions[i].options[j]}</span>
+              </div>
+              <div
+                className={`flex flex-row ${pctg(answer[j])} ${
+                  colors[j]
+                } h-8 rounded-lg relative`}
+              >
+                <span className="absolute top-1 left-2">{answer[j]}</span>
+              </div>
+            </div>
+          ))}
         </div>
       ))}
       <div></div>
