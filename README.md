@@ -30,7 +30,15 @@ $> npx hardhat compile
 $> npx hardhat deploy --network localhost
 ```
 
-## start application
+create `.env` file in root directory
+
+```
+SURVEY_FACTORY_V1_CONTRACT_ADDRESS=[factory address]
+NEXT_PUBLIC_SURVEY_FACTORY_V1_CONTRACT_ADDRESS=[factory address]
+NODE_URL=http://localhost:8545
+```
+
+## Start application
 
 ```shell
 $> npm run dev # in the root directory
