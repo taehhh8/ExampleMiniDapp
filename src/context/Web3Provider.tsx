@@ -8,22 +8,20 @@ declare global {
 }
 
 import React, { createContext, useContext, useEffect, useState } from "react";
-import DappPortalSDK, {
-  WalletProvider,
-  WalletType,
-} from "@linenext/dapp-portal-sdk";
+import DappPortalSDK, { WalletType } from "@linenext/dapp-portal-sdk";
 import { ethers } from "ethers";
 import { Web3Provider as w3 } from "@kaiachain/ethers-ext/v6";
 import { stringify, parse } from "flatted";
-import { useLiff } from "./LiffProvider";
-import { Identity } from "@semaphore-protocol/core/identity";
-import { createIdentity } from "../hooks/browser/survey";
+import { useLiff } from "./LiffProvider.tsx";
+import { Identity } from "@semaphore-protocol/identity";
+import { createIdentity } from "../hooks/browser/survey.tsx";
 
 const WALLET_PROVIDER_KEY = "walletProvider";
 const SEMAPHORE_IDENTITY_KEY = "semaphoreIdentity";
 
 interface Web3ContextType {
-  provider: w3 | null;
+  // provider: w3 | null;
+  provider: ethers.BrowserProvider | null;
   account: string | null;
   identity: Identity | null;
   isConnected: boolean;
@@ -36,7 +34,8 @@ const Web3Context = createContext<Web3ContextType | undefined>(undefined);
 export const Web3Provider: React.FC<{ children: React.ReactNode }> = ({
   children,
 }) => {
-  const [provider, setProvider] = useState<w3 | null>(null);
+  // const [provider, setProvider] = useState<w3 | null>(null);
+  const [provider, setProvider] = useState<ethers.BrowserProvider | null>(null);
   const [account, setAccount] = useState<string | null>(null);
   const [isConnected, setIsConnected] = useState<boolean>(false);
   const [identity, setIdentity] = useState<Identity | null>(null);
@@ -64,11 +63,12 @@ export const Web3Provider: React.FC<{ children: React.ReactNode }> = ({
 
   const connectWallet = async () => {
     try {
-      if (!window.ethereum) {
+      if (!window.klaytn) {
         alert("kaia wallet is not installed!");
         return;
       }
-      const web3Provider = new w3(window.klaytn);
+      // const web3Provider = new w3(window.klaytn);
+      const web3Provider = new ethers.BrowserProvider(window.ethereum);
       const accounts = await web3Provider.send("eth_requestAccounts", []);
       setProvider(web3Provider);
       setAccount(accounts[0]);

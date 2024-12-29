@@ -3,9 +3,9 @@
 import { useForm, useFieldArray } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useWeb3 } from "../../../context/Web3Provider";
-import { createSurvey, getSurveyV1s } from "../../../hooks/browser/factory";
-import { useRouter } from "next/navigation";
+import { useWeb3 } from "../../../context/Web3Provider.tsx";
+import { createSurvey, getSurveyV1s } from "../../../hooks/browser/factory.tsx";
+import { useRouter } from "next/navigation.js";
 
 // Define the form schema using zod
 const formSchema = z.object({

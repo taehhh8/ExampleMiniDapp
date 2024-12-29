@@ -1,19 +1,21 @@
 import surveyAbi from "../../contracts/SurveyV1.sol/SurveyV1.json";
-import { ethers } from "ethers";
-import { Answer } from "../../types";
-import { Identity } from "@semaphore-protocol/core";
+import { ethers } from "ethers6";
+import { Answer } from "../../types/index.ts";
+import { Identity } from "@semaphore-protocol/identity";
 import { liff } from "@line/liff";
-import { Web3Provider } from "@kaiachain/ethers-ext/v6";
+import { Web3Provider, JsonRpcSigner } from "@kaiachain/ethers-ext/v6";
 
 const getSurveyV1 = (surveyAddress: string, signer: ethers.JsonRpcSigner) =>
   new ethers.Contract(surveyAddress, surveyAbi.abi, signer);
 
 export const submitAnswer = async (
   surveyAddress: string,
+  // provider: Web3Provider,
   provider: ethers.BrowserProvider,
   answer: Answer
 ) => {
-  const survey = getSurveyV1(surveyAddress, await provider.getSigner(0));
+  const signer = await provider.getSigner(0);
+  const survey = getSurveyV1(surveyAddress, signer);
   try {
     const tx = await survey.submitAnswer(answer);
     const receipt = await tx.wait();
@@ -25,12 +27,17 @@ export const submitAnswer = async (
 };
 
 export const createIdentity = async (
-  web3: Web3Provider,
+  // web3: Web3Provider,
+  web3: ethers.BrowserProvider,
   address: string,
-  liffObject: liff
+  liffObject: typeof liff
 ) => {
+  const idToken = liffObject.getDecodedIDToken();
+  if (!idToken) {
+    throw Error("Failed to get ID token");
+  }
+
   try {
-    const idToken = liffObject.getDecodedIDToken();
     const uid = idToken.sub;
     const msg = "hello destat" + uid + address;
     const hexMsg = ethers.hexlify(ethers.toUtf8Bytes(msg));

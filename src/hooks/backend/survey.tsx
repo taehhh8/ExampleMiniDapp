@@ -1,18 +1,15 @@
 import { ethers } from "ethers";
-import { provider } from "../common/provider";
+import { provider } from "../common/provider.tsx";
 import surveyAbi from "../../contracts/SurveyV1.sol/SurveyV1.json";
-import { getSurveyV1s } from "./factory";
-import { Answer, Question } from "../../types";
+import { getSurveyV1s } from "./factory.tsx";
+import { Answer, Question } from "../../types/index.ts";
 import { SemaphoreSubgraph } from "@semaphore-protocol/data";
 
 export const getGroupMembers = async (groupId: string) => {
   const semaphoreSubgraph = new SemaphoreSubgraph(
     process.env.SEMAPHORE_SUBGRAPH_URL as string
   );
-  const { members } = await semaphoreSubgraph.getGroupMembers(groupId, {
-    members: true,
-  });
-  return members;
+  return await semaphoreSubgraph.getGroupMembers(groupId);
 };
 
 const getSurveyV1 = (address: string) =>

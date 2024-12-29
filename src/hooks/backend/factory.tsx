@@ -1,5 +1,5 @@
 import { ethers } from "ethers";
-import { provider } from "../common/provider";
+import { provider } from "../common/provider.tsx";
 import factoryAbi from "../../contracts/SurveyFactoryV1.sol/SurveyFactoryV1.json";
 
 const factoryV1 = new ethers.Contract(

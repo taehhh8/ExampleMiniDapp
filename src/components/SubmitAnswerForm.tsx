@@ -1,12 +1,13 @@
 "use client";
 
 import React from "react";
-import { Question } from "../types";
-import { useWeb3 } from "../context/Web3Provider";
-import { submitAnswer } from "../hooks/browser/survey";
-import { useRouter } from "next/navigation";
-import { generateProof, Group } from "@semaphore-protocol/core";
-import { getGroupId, getGroupMembers } from "../hooks/backend/survey";
+import { Question } from "../types/index.ts";
+import { useWeb3 } from "../context/Web3Provider.tsx";
+import { submitAnswer } from "../hooks/browser/survey.tsx";
+import { useRouter } from "next/navigation.js";
+import { Group } from "@semaphore-protocol/group";
+import { generateProof } from "@semaphore-protocol/proof";
+import { getGroupId, getGroupMembers } from "../hooks/backend/survey.tsx";
 
 export default function SubmitAnswerForm({
   id,
@@ -21,7 +22,7 @@ export default function SubmitAnswerForm({
   const getGroup = async () => {
     const groupId = await getGroupId(id);
     const members = await getGroupMembers(groupId);
-    return new Group(groupId, members);
+    return new Group(members);
   };
 
   const submitHandler = async (e: React.FormEvent) => {
@@ -41,7 +42,12 @@ export default function SubmitAnswerForm({
       parseInt(val as string)
     );
     const group = await getGroup();
-    const proof = generateProof(identity, group, ans, group.root);
+    const proof = await generateProof(
+      identity,
+      group,
+      new Uint8Array(ans),
+      group.root
+    );
     const answer = {
       respondent: signer.address,
       answers: ans,

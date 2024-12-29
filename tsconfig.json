@@ -1,8 +1,8 @@
 {
   "compilerOptions": {
     "jsx": "preserve",
-    "target": "es2020",
-    "module": "NodeNext",
+    "target": "ESNext",
+    "module": "ESNext",
     "esModuleInterop": true,
     "forceConsistentCasingInFileNames": true,
     "strict": true,
@@ -12,8 +12,9 @@
     "allowJs": true,
     "noEmit": true,
     "incremental": true,
-    "moduleResolution": "nodenext",
+    "moduleResolution": "bundler",
     "isolatedModules": true,
+    "allowImportingTsExtensions": true,
     "plugins": [
       {
         "name": "next"

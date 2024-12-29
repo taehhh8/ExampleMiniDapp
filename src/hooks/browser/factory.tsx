@@ -1,7 +1,9 @@
 import { ethers } from "ethers";
-import { provider } from "../common/provider";
+import { provider } from "../common/provider.tsx";
 import factoryAbi from "../../contracts/SurveyFactoryV1.sol/SurveyFactoryV1.json";
-import { Question } from "../../types";
+import { Question } from "../../types/index.ts";
+import { Web3Provider } from "@kaiachain/ethers-ext";
+import { BigNumberish } from "ethers";
 
 const factoryV1 = new ethers.Contract(
   process.env.NEXT_PUBLIC_SURVEY_FACTORY_V1_CONTRACT_ADDRESS || "",
@@ -29,15 +31,14 @@ export const createSurvey = async ({
   provider: ethers.BrowserProvider;
   title: string;
   desc: string;
-  //   questions: Question[];
   questions: Question[];
   targetNumber: ethers.BigNumberish;
   duration: ethers.BigNumberish;
   rewardPool: ethers.BigNumberish;
 }) => {
   provider
-    .getBalance((await provider.getSigner(0)).address)
-    .then((balance: ethers.BigNumberish) => {
+    .getBalance((await provider.getSigner(0)).getAddress())
+    .then((balance: BigNumberish) => {
       // balance check
       if (balance.valueOf() < rewardPool) {
         throw new Error("Insufficient balance");

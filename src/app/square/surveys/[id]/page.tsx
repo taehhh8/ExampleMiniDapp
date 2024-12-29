@@ -3,13 +3,16 @@ import {
   countAnswers,
   getSurvey,
   getSurveyQuestions,
-} from "../../../../hooks/backend/survey";
-import SubmitAnswerForm from "../../../../components/SubmitAnswerForm";
-import AnswerChart from "../../../../components/AnswerChart";
+} from "../../../../hooks/backend/survey.tsx";
+import SubmitAnswerForm from "../../../../components/SubmitAnswerForm.tsx";
+import AnswerChart from "../../../../components/AnswerChart.tsx";
 
-export default async function Survey({ params }: { params: { id: string } }) {
+export default async function Survey({
+  params,
+}: {
+  params: Promise<{ id: string }>;
+}) {
   const { id } = await params;
-  console.log("id", id);
   const info = await getSurvey(id);
   const questions = await getSurveyQuestions(id);
   const answers = await countAnswers(id, questions);

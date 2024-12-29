@@ -13,12 +13,12 @@ const LiffContext = createContext<LiffContextType | undefined>(undefined);
 export const LiffProvider: React.FC<{ children: React.ReactNode }> = ({
   children,
 }) => {
-  const [liffObject, setLiffObject] = useState(null);
+  const [liffObject, setLiffObject] = useState<typeof liff | null>(null);
   const [liffError, setLiffError] = useState(null);
 
   useEffect(() => {
     liff
-      .init({ liffId: process.env.NEXT_PUBLIC_LIFF_ID })
+      .init({ liffId: process.env.NEXT_PUBLIC_LIFF_ID as string })
       .then(() => {
         console.log("liff initialization is done");
         setLiffObject(liff);
