@@ -12,8 +12,12 @@ export const getGroupMembers = async (groupId: string) => {
   return await semaphoreSubgraph.getGroupMembers(groupId);
 };
 
-const getSurveyV1 = (address: string) =>
-  new ethers.Contract(address, surveyAbi.abi, provider);
+const getSurveyV1 = (address: string) => {
+  if (!ethers.isAddress(address)) {
+    throw Error("Invalid survey address");
+  }
+  return new ethers.Contract(address, surveyAbi.abi, provider);
+};
 
 const getManagerConnectedSurveyV1 = (address: string) => {
   if (!ethers.isAddress(address)) {
