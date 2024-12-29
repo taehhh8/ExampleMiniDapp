@@ -1,7 +1,7 @@
 "use client";
 import React, { useState } from "react";
 import { Question } from "../types";
-import { PieChart } from "react-minimal-pie-chart";
+// import { PieChart } from "react-minimal-pie-chart";
 
 const colors = [
   "#33991A",
@@ -65,7 +65,7 @@ export default function AnswerPieChart({
 }) {
   return (
     <div className="flex flex-col justify-center items-center w-96 h-auto rounded-lg bg-white mb-24 p-10">
-      {answers.map((answer: number[], i: number) => (
+      {/* {answers.map((answer: number[], i: number) => (
         <div key={i}>
           <h3>{questions[i].question}</h3>
           {answer.reduce((sum, cnt) => sum + cnt, 0) === 0 ? (
@@ -93,7 +93,7 @@ export default function AnswerPieChart({
           )}
         </div>
       ))}
-      <div></div>
+      <div></div> */}
     </div>
   );
 }
