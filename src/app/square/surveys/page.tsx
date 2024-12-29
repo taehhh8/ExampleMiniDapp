@@ -1,3 +1,5 @@
+export const dynamic = "force-dynamic";
+
 import React from "react";
 import SurveyCard from "../../../components/SurveyCard";
 import { getAllSurveyV1s } from "../../../hooks/backend/survey";
