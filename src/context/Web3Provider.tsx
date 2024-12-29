@@ -68,7 +68,7 @@ export const Web3Provider: React.FC<{ children: React.ReactNode }> = ({
         return;
       }
       // const web3Provider = new w3(window.klaytn);
-      const web3Provider = new ethers.BrowserProvider(window.ethereum);
+      const web3Provider = new ethers.BrowserProvider(window.klaytn);
       const accounts = await web3Provider.send("eth_requestAccounts", []);
       setProvider(web3Provider);
       setAccount(accounts[0]);

@@ -41,7 +41,8 @@ export const createIdentity = async (
     const uid = idToken.sub;
     const msg = "hello destat" + uid + address;
     const hexMsg = ethers.hexlify(ethers.toUtf8Bytes(msg));
-    const secret = await web3.send("kaia_signLegacy", [address, hexMsg]);
+    // const secret = await web3.send("kaia_signLegacy", [address, hexMsg]);
+    const secret = await web3.send("klay_sign", [address, hexMsg]);
     return new Identity(secret);
   } catch (e) {
     console.log("error", e);
