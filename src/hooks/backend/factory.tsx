@@ -1,6 +1,6 @@
 import { ethers } from "ethers";
 import { provider } from "../common/provider";
-import factoryAbi from "../../../contract/artifacts/contracts/SurveyFactoryV1.sol/SurveyFactoryV1.json";
+import factoryAbi from "../../contracts/SurveyFactoryV1.sol/SurveyFactoryV1.json";
 
 const factoryV1 = new ethers.Contract(
   process.env.SURVEY_FACTORY_V1_CONTRACT_ADDRESS || "",

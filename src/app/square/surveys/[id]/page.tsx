@@ -9,6 +9,7 @@ import AnswerChart from "../../../../components/AnswerChart";
 
 export default async function Survey({ params }: { params: { id: string } }) {
   const { id } = await params;
+  console.log("id", id);
   const info = await getSurvey(id);
   const questions = await getSurveyQuestions(id);
   const answers = await countAnswers(id, questions);

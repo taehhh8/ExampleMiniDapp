@@ -1,11 +1,33 @@
 import { ethers } from "ethers";
 import { provider } from "../common/provider";
-import surveyAbi from "../../../contract/artifacts/contracts/SurveyV1.sol/SurveyV1.json";
+import surveyAbi from "../../contracts/SurveyV1.sol/SurveyV1.json";
 import { getSurveyV1s } from "./factory";
 import { Answer, Question } from "../../types";
+import { SemaphoreSubgraph } from "@semaphore-protocol/data";
+
+export const getGroupMembers = async (groupId: string) => {
+  const semaphoreSubgraph = new SemaphoreSubgraph(
+    process.env.SEMAPHORE_SUBGRAPH_URL as string
+  );
+  const { members } = await semaphoreSubgraph.getGroupMembers(groupId, {
+    members: true,
+  });
+  return members;
+};
 
 const getSurveyV1 = (address: string) =>
   new ethers.Contract(address, surveyAbi.abi, provider);
+
+const getManagerConnectedSurveyV1 = (address: string) => {
+  if (!ethers.isAddress(address)) {
+    throw Error("Invalid survey address");
+  }
+  const manager = new ethers.Wallet(
+    process.env.MANAGER_PRIVATE_KEY as string,
+    provider
+  );
+  return new ethers.Contract(address, surveyAbi.abi, manager);
+};
 
 export const getAllSurveyV1s = async () => {
   const surveyAddresses = await getSurveyV1s();
@@ -14,9 +36,9 @@ export const getAllSurveyV1s = async () => {
     const info = await survey.surveyInfo();
     return info;
   });
-  const rlp = await Promise.all(surveys);
-  return rlp.map((info) => {
-    return decodeSurveyInfo(info, surveyAddresses[rlp.indexOf(info)]);
+  const infos = await Promise.all(surveys);
+  return infos.map((info) => {
+    return decodeSurveyInfo(info, surveyAddresses[infos.indexOf(info)]);
   });
 };
 
@@ -65,8 +87,11 @@ const decodeQuestion = (question: any) => {
 const decodeAnswer = (answer: any) => {
   return {
     respondent: answer[0],
-    commit: answer[1],
-    answers: answer[2],
+    answers: answer[1],
+    merkleTreeDepth: answer[2],
+    merkleTreeRoot: answer[3],
+    nullifier: answer[4],
+    points: answer[5],
   };
 };
 
@@ -90,4 +115,57 @@ const remainedSurvey = (targetNumber: number, respondents: number) => {
 const daysLeft = (duration: bigint) => {
   const now = BigInt(Math.floor(Date.now() / 1000));
   return Number(duration - now) / 86400;
+};
+
+export const getGroupId = async (surveyAddress: string) => {
+  const survey = getSurveyV1(surveyAddress);
+  const groupId = await survey.groupId();
+  return groupId;
+};
+
+const isValidToken = async (idToken: string) => {
+  const valid = await fetch(process.env.VALIDATE_ID_TOKEN_SERVER as string, {
+    method: "GET",
+    headers: {
+      Authorization: `Bearer ${idToken}`,
+    },
+  });
+  if (valid.ok) throw Error("Invalid token");
+
+  return valid.json();
+};
+
+const verifyLineIdentity = async (
+  userId: string,
+  address: string,
+  signature: ethers.SignatureLike
+) => {
+  const hexMsg = ethers.hexlify(
+    ethers.toUtf8Bytes("hello destat" + userId + address)
+  );
+  const verifiedAddr = await provider.send("klay_recoverFromMessage", [
+    address,
+    hexMsg,
+    signature,
+    "latest",
+  ]);
+  if (verifiedAddr.toLowerCase() !== address.toLowerCase())
+    throw Error("Invalid signature");
+};
+
+export const joinGroup = async (
+  surveyAddress: string,
+  commitment: bigint,
+  signature: ethers.SignatureLike,
+  idToken: string,
+  address: string
+) => {
+  const survey = getManagerConnectedSurveyV1(surveyAddress);
+
+  const profile = await isValidToken(idToken);
+  await verifyLineIdentity(profile.userId, address, signature);
+
+  const tx = await survey.joinGroup(commitment);
+  const receipt = await tx.wait();
+  return receipt;
 };

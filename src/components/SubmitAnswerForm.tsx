@@ -4,6 +4,9 @@ import React from "react";
 import { Question } from "../types";
 import { useWeb3 } from "../context/Web3Provider";
 import { submitAnswer } from "../hooks/browser/survey";
+import { useRouter } from "next/navigation";
+import { generateProof, Group } from "@semaphore-protocol/core";
+import { getGroupId, getGroupMembers } from "../hooks/backend/survey";
 
 export default function SubmitAnswerForm({
   id,
@@ -12,23 +15,48 @@ export default function SubmitAnswerForm({
   id: string;
   questions: Question[];
 }) {
-  const { provider } = useWeb3();
+  const { provider, identity } = useWeb3();
+  const router = useRouter();
+
+  const getGroup = async () => {
+    const groupId = await getGroupId(id);
+    const members = await getGroupMembers(groupId);
+    return new Group(groupId, members);
+  };
 
   const submitHandler = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!provider) return;
+    if (!provider) {
+      alert("Please connect the wallet first!");
+      return;
+    }
+    if (!identity) {
+      alert("You need to login with LINE if you want to submit the answer");
+      return;
+    }
     const form = e.target as HTMLFormElement;
     const formData = new FormData(form);
     const signer = await provider.getSigner();
+    const ans = Array.from(formData.values()).map((val) =>
+      parseInt(val as string)
+    );
+    const group = await getGroup();
+    const proof = generateProof(identity, group, ans, group.root);
     const answer = {
       respondent: signer.address,
-      commit: "0x1234567890123456789012345678901234567890",
-      answers: Array.from(formData.values()).map((val) =>
-        parseInt(val as string)
-      ),
+      answers: ans,
+      merkleTreeDepth: proof.merkleTreeDepth,
+      merkleTreeRoot: proof.merkleTreeRoot,
+      nullifier: proof.nullifier,
+      points: proof.points,
     };
     const receipt = await submitAnswer(id, provider, answer);
-    console.log(receipt);
+    if (receipt.status) {
+      alert("Successfully submitted!");
+      router.push(`/square/surveys/${id}`);
+    } else {
+      alert("Failed to submit");
+    }
   };
 
   return (

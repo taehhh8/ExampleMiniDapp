@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.27;
 import "./ISurvey.sol";
+import "./semaphore/interfaces/ISemaphore.sol";
 
 event AnswerSubmitted(address indexed respondent, uint8[] answers);
 
@@ -9,11 +10,13 @@ contract SurveyV1 is ISurvey {
     uint256 public constant VERSION = 1;
     uint256 public constant TYPE = 1; // 1 for survey, 2 for poll
 
+    address public owner;
+    address public manager;
+
     string public title;
     string public description;
     uint256 public targetNumber;
     uint256 public reward;
-    address public owner;
     uint256 public surveyNumber;
     uint256 public burnRate;
     Question[] public questions;
@@ -23,6 +26,11 @@ contract SurveyV1 is ISurvey {
     uint256 public timestamp;
     uint256 public lockedUntil;
 
+    ISemaphore public semaphore;
+    uint256 public groupId;
+
+    // The number of questions are limited to 32
+    // because of the limitation of the semaphore contract
     struct Question {
         string question;
         string[] options;
@@ -30,12 +38,20 @@ contract SurveyV1 is ISurvey {
 
     struct Answer {
         address respondent;
-        string commit;
         uint8[] answers;
+        uint256 merkleTreeDepth;
+        uint256 merkleTreeRoot;
+        uint256 nullifier;
+        uint256[8] points;
+    }
+
+    modifier onlyMgr() {
+        require(msg.sender == manager, "Access denied: Not the manager");
+        _;
     }
 
     // Constructor accepts raw byte data for the questions
-    constructor(string memory _title, string memory _description, Question[] memory _questions, uint256 _targetNumber, uint256 _lockedUntil, uint256 _burnRate) payable {
+    constructor(string memory _title, string memory _description, Question[] memory _questions, uint256 _targetNumber, uint256 _lockedUntil, uint256 _burnRate, ISemaphore _semaphore, address _manager, uint256 _groupId) payable {
         SURVEY_FACTORY = msg.sender;
         surveyNumber = 0;
 
@@ -64,6 +80,9 @@ contract SurveyV1 is ISurvey {
         timestamp = block.timestamp;
         lockedUntil = timestamp + _lockedUntil * 1 days;
         owner = msg.sender;
+        semaphore = ISemaphore(_semaphore);
+        groupId = _groupId;
+        manager = _manager;
         
         payable(0x000000000000000000000000000000000000dEaD).transfer(msg.value * burnRate / 10000);
         reward = (msg.value - msg.value * burnRate / 10000) / targetNumber; // 5% burn
@@ -73,6 +92,20 @@ contract SurveyV1 is ISurvey {
         require(_answer.answers.length == questions.length, "Answer length must match question length");
         require(surveyNumber < targetNumber, "Survey is already full");
         require(block.timestamp < lockedUntil, "Survey is finished");
+
+        uint256 message = this.uint8ArrayToUint256(_answer.answers);
+
+        ISemaphore.SemaphoreProof memory proof = ISemaphore.SemaphoreProof(
+            _answer.merkleTreeDepth,
+            _answer.merkleTreeRoot,
+            _answer.nullifier,
+            message,
+            groupId,
+            _answer.points
+        );
+
+        semaphore.validateProof(groupId, proof);
+
         for (uint i=0; i<questions.length; i++) {
             require(_answer.answers[i] < questions[i].options.length, "Answer out of bounds");
         }
@@ -94,14 +127,14 @@ contract SurveyV1 is ISurvey {
     }
 
     function finish() public {
-        require(block.timestamp >= lockedUntil, "Survey is not locked yet");
+        require(block.timestamp >= lockedUntil, "Survey is not finished yet");
         finished = true;
     }
 
     function withdraw() public {
         require(msg.sender == owner, "Only owner can withdraw");
-        require(finished, "Survey is not finished yet");
         require(address(this).balance > 0, "No balance to withdraw");
+        this.finished();
         payable(owner).transfer(address(this).balance);
     }
 
@@ -112,6 +145,22 @@ contract SurveyV1 is ISurvey {
 
     function surveyInfo() public view returns (string memory, string memory, address, uint256, uint256, uint256, uint256, uint256, uint256, uint256, bool) {
         return (title, description, owner, reward, targetNumber, surveyNumber, timestamp, lockedUntil, TYPE, VERSION, finished);
+    }
+
+    function joinGroup(uint256 identityCommitment) external onlyMgr {
+        require(finished == false, "Survey is finished");
+        semaphore.addMember(groupId, identityCommitment);
+    }
+
+    function uint8ArrayToUint256(uint8[] memory data) public pure returns (uint256) {
+        require(data.length <= 32, "uint8[] exceeds 32 bytes");
+        uint256 result = 0;
+
+        for (uint256 i = 0; i < data.length; i++) {
+            result |= uint256(data[i]) << (8 * (31 - i));
+        }
+
+        return result;
     }
 
     // Fallback function to receive kaia

@@ -5,8 +5,11 @@ export interface Question {
 
 export interface Answer {
   respondent: string;
-  commit: string;
   answers: number[];
+  merkleTreeDepth: number;
+  merkleTreeRoot: number;
+  nullifier: number;
+  points: number[];
 }
 
 export interface SurveyInfo {

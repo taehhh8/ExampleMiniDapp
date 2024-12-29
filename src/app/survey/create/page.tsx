@@ -5,6 +5,7 @@ import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useWeb3 } from "../../../context/Web3Provider";
 import { createSurvey, getSurveyV1s } from "../../../hooks/browser/factory";
+import { useRouter } from "next/navigation";
 
 // Define the form schema using zod
 const formSchema = z.object({
@@ -35,6 +36,7 @@ type FormData = z.infer<typeof formSchema>;
 
 export default function DynamicForm() {
   const { provider } = useWeb3();
+  const router = useRouter();
 
   const {
     control,
@@ -80,11 +82,11 @@ export default function DynamicForm() {
     append(q);
   };
 
-  const onSubmit = (data: FormData) => {
+  const onSubmit = async (data: FormData) => {
     if (!provider) {
       return;
     }
-    createSurvey({
+    const result = await createSurvey({
       provider,
       title: data.title,
       desc: data.desc,
@@ -93,6 +95,14 @@ export default function DynamicForm() {
       duration: data.duration,
       rewardPool: data.rewardPool,
     });
+
+    console.log(result);
+    if (result.status) {
+      alert("Survey created successfully");
+      router.push("/square/surveys/" + result.surveyContractAddress.args[0]);
+    } else {
+      alert("Failed to create survey");
+    }
   };
 
   return (

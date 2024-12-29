@@ -1,6 +1,6 @@
 import { ethers } from "ethers";
 import { provider } from "../common/provider";
-import factoryAbi from "../../../contract/artifacts/contracts/SurveyFactoryV1.sol/SurveyFactoryV1.json";
+import factoryAbi from "../../contracts/SurveyFactoryV1.sol/SurveyFactoryV1.json";
 import { Question } from "../../types";
 
 const factoryV1 = new ethers.Contract(
@@ -56,13 +56,15 @@ export const createSurvey = async ({
     }
   );
   const receipt = await tx.wait();
-  const surveyContractAddress = fV1.interface.parseLog(receipt.logs[0])
-    ?.args[0];
-
+  const surveyContractAddress = fV1.interface.parseLog(receipt.logs[2]);
+  const status = receipt.status;
   if (!surveyContractAddress) {
     throw new Error("Survey contract address is null");
   }
-  return surveyContractAddress;
+  return {
+    status,
+    surveyContractAddress,
+  };
 };
 
 export const getSurveyV1s = async () => {
