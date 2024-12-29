@@ -19,7 +19,7 @@ export const submitAnswer = async (
     const receipt = await tx.wait();
     return receipt;
   } catch (e: any) {
-    console.error(e);
+    console.log("error", e);
     return e.message;
   }
 };
@@ -36,8 +36,8 @@ export const createIdentity = async (
     const hexMsg = ethers.hexlify(ethers.toUtf8Bytes(msg));
     const secret = await web3.send("kaia_signLegacy", [address, hexMsg]);
     return new Identity(secret);
-  } catch (error) {
-    console.log("error", error);
+  } catch (e) {
+    console.log("error", e);
     throw Error("Failed to create identity");
   }
 };
