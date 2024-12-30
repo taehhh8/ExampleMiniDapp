@@ -1,17 +1,17 @@
 import surveyAbi from "../../contracts/SurveyV1.sol/SurveyV1.json";
-import { ethers } from "ethers6";
+import { ethers } from "ethers";
 import { Answer } from "../../types/index.ts";
 import { Identity } from "@semaphore-protocol/identity";
 import { liff } from "@line/liff";
-import { Web3Provider, JsonRpcSigner } from "@kaiachain/ethers-ext/v6";
+import { Web3Provider } from "@kaiachain/ethers-ext/v6";
 
 const getSurveyV1 = (surveyAddress: string, signer: ethers.JsonRpcSigner) =>
   new ethers.Contract(surveyAddress, surveyAbi.abi, signer);
 
 export const submitAnswer = async (
   surveyAddress: string,
-  // provider: Web3Provider,
-  provider: ethers.BrowserProvider,
+  provider: Web3Provider,
+  // provider: ethers.BrowserProvider,
   answer: Answer
 ) => {
   const signer = await provider.getSigner(0);
@@ -27,8 +27,8 @@ export const submitAnswer = async (
 };
 
 export const createIdentity = async (
-  // web3: Web3Provider,
-  web3: ethers.BrowserProvider,
+  web3: Web3Provider,
+  // web3: ethers.BrowserProvider,
   address: string,
   liffObject: typeof liff
 ) => {
