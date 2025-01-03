@@ -17,6 +17,8 @@ import { Identity } from "@semaphore-protocol/identity";
 import { createIdentity } from "../hooks/browser/survey.tsx";
 
 const WALLET_PROVIDER_KEY = "walletProvider";
+const WALLET_ACCOUNT_KEY = "walletAccount";
+const WALLET_IS_CONNECTED_KEY = "isWalletConnected";
 const SEMAPHORE_IDENTITY_KEY = "semaphoreIdentity";
 
 interface Web3ContextType {
@@ -41,25 +43,67 @@ export const Web3Provider: React.FC<{ children: React.ReactNode }> = ({
   const [identity, setIdentity] = useState<Identity | null>(null);
   const { liffObject, liffError } = useLiff();
 
+  // liff.login() make the page reload, so we need to load the state from the session storage
   useEffect(() => {
-    const storedProvider = localStorage.getItem(WALLET_PROVIDER_KEY);
+    const storedProvider = sessionStorage.getItem(WALLET_PROVIDER_KEY);
+    const storedAccount = sessionStorage.getItem(WALLET_ACCOUNT_KEY);
+    const storedIsConnected = sessionStorage.getItem(WALLET_IS_CONNECTED_KEY);
+    const storedIdentity = sessionStorage.getItem(SEMAPHORE_IDENTITY_KEY);
     if (storedProvider) {
       setProvider(parse(storedProvider));
+    }
+    if (storedAccount) {
+      setAccount(storedAccount);
+    }
+    if (storedIsConnected) {
+      setIsConnected(true);
+    }
+    if (storedIdentity) {
+      setIdentity(parse(storedIdentity));
     }
   }, []);
 
   useEffect(() => {
     if (provider) {
-      localStorage.setItem(WALLET_PROVIDER_KEY, stringify(provider));
+      sessionStorage.setItem(WALLET_PROVIDER_KEY, stringify(provider));
     } else {
-      localStorage.removeItem(WALLET_PROVIDER_KEY);
+      sessionStorage.removeItem(WALLET_PROVIDER_KEY);
     }
+  }, [provider]);
+
+  useEffect(() => {
     if (identity) {
-      localStorage.setItem(SEMAPHORE_IDENTITY_KEY, stringify(identity));
+      sessionStorage.setItem(SEMAPHORE_IDENTITY_KEY, stringify(identity));
     } else {
-      localStorage.removeItem(SEMAPHORE_IDENTITY_KEY);
+      sessionStorage.removeItem(SEMAPHORE_IDENTITY_KEY);
     }
-  }, [provider, identity]);
+  }, [identity]);
+
+  useEffect(() => {
+    if (isConnected) {
+      sessionStorage.setItem(WALLET_IS_CONNECTED_KEY, "true");
+    } else {
+      sessionStorage.removeItem(WALLET_IS_CONNECTED_KEY);
+    }
+  }, [isConnected]);
+
+  useEffect(() => {
+    if (account) {
+      sessionStorage.setItem(WALLET_ACCOUNT_KEY, account);
+    } else {
+      sessionStorage.removeItem(WALLET_ACCOUNT_KEY);
+    }
+  }, [account]);
+
+  const handleAccountsChanged = (accounts: string[]) => {
+    if (accounts.length === 0) {
+      setAccount(null);
+      setIsConnected(false);
+    } else {
+      setAccount(accounts[0]);
+      setIsConnected(true);
+    }
+  };
 
   const connectWallet = async () => {
     try {
@@ -70,6 +114,7 @@ export const Web3Provider: React.FC<{ children: React.ReactNode }> = ({
       const web3Provider = new w3(window.klaytn);
       // const web3Provider = new ethers.BrowserProvider(window.klaytn);
       const accounts = await web3Provider.send("eth_requestAccounts", []);
+      web3Provider.on("accountsChanged", handleAccountsChanged);
       setProvider(web3Provider);
       setAccount(accounts[0]);
       setIsConnected(true);
