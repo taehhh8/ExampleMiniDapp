@@ -67,8 +67,8 @@ export const Web3Provider: React.FC<{ children: React.ReactNode }> = ({
     if (storedIdentity) {
       setIdentity(JSON.parse(storedIdentity));
     }
-    console.log("isLoggedIn", liffObject.isLoggedIn());
-    if (liffObject.isLoggedIn()) {
+    console.log("isLoggedIn", liffObject?.isLoggedIn());
+    if (liffObject?.isLoggedIn()) {
       getIdentity();
     }
   }, []);
