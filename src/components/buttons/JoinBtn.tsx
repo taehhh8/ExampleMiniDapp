@@ -25,7 +25,7 @@ export default function JoinBtn({ id }: { id: string }) {
       },
       body: JSON.stringify({
         id,
-        commitment: identity.commitment,
+        commitment: identity.commitment.toString(),
         signature: identity.privateKey,
         idToken,
         account,
