@@ -63,7 +63,13 @@ export const Web3Provider: React.FC<{ children: React.ReactNode }> = ({
 
   useEffect(() => {
     if (identity) {
-      sessionStorage.setItem(SEMAPHORE_IDENTITY_KEY, JSON.stringify(identity));
+      sessionStorage.setItem(
+        SEMAPHORE_IDENTITY_KEY,
+        JSON.stringify({
+          ...identity,
+          commitment: identity.commitment.toString(),
+        })
+      );
     } else {
       sessionStorage.removeItem(SEMAPHORE_IDENTITY_KEY);
     }
