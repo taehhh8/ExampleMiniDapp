@@ -54,6 +54,7 @@ export const createSurvey = async ({
     duration,
     {
       value: ethers.parseEther(rewardPool.toString()),
+      gasLimit: 5000000,
     }
   );
   const receipt = await tx.wait();
