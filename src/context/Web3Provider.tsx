@@ -9,7 +9,6 @@ declare global {
 
 import React, { createContext, useContext, useEffect, useState } from "react";
 import DappPortalSDK, { WalletType } from "@linenext/dapp-portal-sdk";
-import { parse, stringify } from "flatted";
 import { ethers } from "ethers";
 import { Web3Provider as w3 } from "@kaiachain/ethers-ext/v6";
 import { useLiff } from "./LiffProvider.tsx";
@@ -57,13 +56,16 @@ export const Web3Provider: React.FC<{ children: React.ReactNode }> = ({
       setIsConnected(true);
     }
     if (storedIdentity) {
-      setIdentity(parse(storedIdentity));
+      setIdentity(new Identity(storedIdentity));
     }
   }, []);
 
   useEffect(() => {
     if (identity) {
-      sessionStorage.setItem(SEMAPHORE_IDENTITY_KEY, stringify(identity));
+      sessionStorage.setItem(
+        SEMAPHORE_IDENTITY_KEY,
+        identity.privateKey as string
+      );
     } else {
       sessionStorage.removeItem(SEMAPHORE_IDENTITY_KEY);
     }
