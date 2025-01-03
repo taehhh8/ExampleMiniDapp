@@ -67,10 +67,6 @@ export const Web3Provider: React.FC<{ children: React.ReactNode }> = ({
     if (storedIdentity) {
       setIdentity(JSON.parse(storedIdentity));
     }
-    console.log("isLoggedIn", liffObject?.isLoggedIn());
-    if (liffObject?.isLoggedIn()) {
-      getIdentity();
-    }
   }, []);
 
   useEffect(() => {
@@ -118,6 +114,7 @@ export const Web3Provider: React.FC<{ children: React.ReactNode }> = ({
         const web3Provider = new w3(window.klaytn);
         // const web3Provider = new ethers.BrowserProvider(window.klaytn);
         const accounts = await web3Provider.send("eth_requestAccounts", []);
+        await getIdentity();
         setProvider(web3Provider);
         setAccount(accounts[0]);
         setIsConnected(true);
