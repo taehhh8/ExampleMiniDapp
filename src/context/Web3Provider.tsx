@@ -42,6 +42,14 @@ export const Web3Provider: React.FC<{ children: React.ReactNode }> = ({
   const [identity, setIdentity] = useState<Identity | null>(null);
   const { liffObject, liffError } = useLiff();
 
+  const getIdentity = async () => {
+    if (!provider || !account) {
+      return;
+    }
+    const identity = await createIdentity(provider, account, liffObject);
+    setIdentity(identity);
+  };
+
   // liff.login() make the page reload, so we need to load the state from the session storage
   useEffect(() => {
     const storedAccount = sessionStorage.getItem(WALLET_ACCOUNT_KEY);
@@ -58,6 +66,10 @@ export const Web3Provider: React.FC<{ children: React.ReactNode }> = ({
     }
     if (storedIdentity) {
       setIdentity(JSON.parse(storedIdentity));
+    }
+    console.log("isLoggedIn", liffObject.isLoggedIn());
+    if (liffObject.isLoggedIn()) {
+      getIdentity();
     }
   }, []);
 
@@ -107,18 +119,6 @@ export const Web3Provider: React.FC<{ children: React.ReactNode }> = ({
       setProvider(web3Provider);
       setAccount(accounts[0]);
       setIsConnected(true);
-
-      const result = await liffObject.login();
-      if (liffObject.isLoggedIn()) {
-        const identity = await createIdentity(
-          web3Provider,
-          accounts[0],
-          liffObject
-        );
-        setIdentity(identity);
-      } else {
-        alert("You need to login with LINE if you want to submit the answer");
-      }
 
       // const sdk = await DappPortalSDK.init({
       //   clientId: process.env.NEXT_PUBLIC_DAPP_PORTAL_CLIENT_ID as string,
