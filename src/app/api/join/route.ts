@@ -1,4 +1,4 @@
-import { NextRequest } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 import { joinGroup } from "../../../hooks/backend/survey";
 import { ethers } from "ethers";
 
@@ -11,21 +11,27 @@ interface JoinGroupData {
 }
 
 export async function POST(req: NextRequest) {
-  const data: JoinGroupData = await req.json();
+  try {
+    const data: JoinGroupData = await req.json();
 
-  const receipt = await joinGroup(
-    data.id,
-    data.commitment,
-    data.signature,
-    data.idToken,
-    data.account
-  );
-
-  return {
-    status: 200,
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify(receipt),
-  };
+    const receipt = await joinGroup(
+      data.id,
+      data.commitment,
+      data.signature,
+      data.idToken,
+      data.account
+    );
+    if (receipt.status !== 1) {
+      return NextResponse.json(
+        { data: JSON.stringify(receipt) },
+        { status: 400 }
+      );
+    }
+    return NextResponse.json(
+      { data: JSON.stringify(receipt) },
+      { status: 200 }
+    );
+  } catch (e) {
+    return NextResponse.json({ data: JSON.stringify(e) }, { status: 400 });
+  }
 }
