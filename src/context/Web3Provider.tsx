@@ -11,7 +11,6 @@ import React, { createContext, useContext, useEffect, useState } from "react";
 import DappPortalSDK, { WalletType } from "@linenext/dapp-portal-sdk";
 import { ethers } from "ethers";
 import { Web3Provider as w3 } from "@kaiachain/ethers-ext/v6";
-import { stringify, parse } from "flatted";
 import { useLiff } from "./LiffProvider.tsx";
 import { Identity } from "@semaphore-protocol/identity";
 import { createIdentity } from "../hooks/browser/survey.tsx";
@@ -50,7 +49,6 @@ export const Web3Provider: React.FC<{ children: React.ReactNode }> = ({
     const storedIdentity = sessionStorage.getItem(SEMAPHORE_IDENTITY_KEY);
     if (window.klaytn) {
       setProvider(new w3(window.klaytn));
-      // setProvider(new w3(JSON.parse(storedProvider)));
     }
     if (storedAccount) {
       setAccount(storedAccount);
@@ -59,15 +57,13 @@ export const Web3Provider: React.FC<{ children: React.ReactNode }> = ({
       setIsConnected(true);
     }
     if (storedIdentity) {
-      setIdentity(parse(storedIdentity));
-      // setIdentity(JSON.parse(storedIdentity));
+      setIdentity(JSON.parse(storedIdentity));
     }
   }, []);
 
   useEffect(() => {
     if (identity) {
-      sessionStorage.setItem(SEMAPHORE_IDENTITY_KEY, stringify(identity));
-      // sessionStorage.setItem(SEMAPHORE_IDENTITY_KEY, JSON.stringify(identity));
+      sessionStorage.setItem(SEMAPHORE_IDENTITY_KEY, JSON.stringify(identity));
     } else {
       sessionStorage.removeItem(SEMAPHORE_IDENTITY_KEY);
     }
@@ -108,12 +104,11 @@ export const Web3Provider: React.FC<{ children: React.ReactNode }> = ({
       const web3Provider = new w3(window.klaytn);
       // const web3Provider = new ethers.BrowserProvider(window.klaytn);
       const accounts = await web3Provider.send("eth_requestAccounts", []);
-      web3Provider.on("accountsChanged", handleAccountsChanged);
       setProvider(web3Provider);
       setAccount(accounts[0]);
       setIsConnected(true);
 
-      // const result = await liffObject.login();
+      const result = await liffObject.login();
       if (liffObject.isLoggedIn()) {
         const identity = await createIdentity(
           web3Provider,
