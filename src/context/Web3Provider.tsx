@@ -113,12 +113,17 @@ export const Web3Provider: React.FC<{ children: React.ReactNode }> = ({
         alert("kaia wallet is not installed!");
         return;
       }
-      const web3Provider = new w3(window.klaytn);
-      // const web3Provider = new ethers.BrowserProvider(window.klaytn);
-      const accounts = await web3Provider.send("eth_requestAccounts", []);
-      setProvider(web3Provider);
-      setAccount(accounts[0]);
-      setIsConnected(true);
+
+      if (liffObject?.isLoggedIn()) {
+        const web3Provider = new w3(window.klaytn);
+        // const web3Provider = new ethers.BrowserProvider(window.klaytn);
+        const accounts = await web3Provider.send("eth_requestAccounts", []);
+        setProvider(web3Provider);
+        setAccount(accounts[0]);
+        setIsConnected(true);
+      } else {
+        liffObject?.login();
+      }
 
       // const sdk = await DappPortalSDK.init({
       //   clientId: process.env.NEXT_PUBLIC_DAPP_PORTAL_CLIENT_ID as string,
