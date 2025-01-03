@@ -9,13 +9,13 @@ declare global {
 
 import React, { createContext, useContext, useEffect, useState } from "react";
 import DappPortalSDK, { WalletType } from "@linenext/dapp-portal-sdk";
+import { parse, stringify } from "flatted";
 import { ethers } from "ethers";
 import { Web3Provider as w3 } from "@kaiachain/ethers-ext/v6";
 import { useLiff } from "./LiffProvider.tsx";
 import { Identity } from "@semaphore-protocol/identity";
 import { createIdentity } from "../hooks/browser/survey.tsx";
 
-const WALLET_PROVIDER_KEY = "walletProvider";
 const WALLET_ACCOUNT_KEY = "walletAccount";
 const WALLET_IS_CONNECTED_KEY = "isWalletConnected";
 const SEMAPHORE_IDENTITY_KEY = "semaphoreIdentity";
@@ -57,19 +57,13 @@ export const Web3Provider: React.FC<{ children: React.ReactNode }> = ({
       setIsConnected(true);
     }
     if (storedIdentity) {
-      setIdentity(JSON.parse(storedIdentity));
+      setIdentity(parse(storedIdentity));
     }
   }, []);
 
   useEffect(() => {
     if (identity) {
-      sessionStorage.setItem(
-        SEMAPHORE_IDENTITY_KEY,
-        JSON.stringify({
-          ...identity,
-          commitment: identity.commitment.toString(),
-        })
-      );
+      sessionStorage.setItem(SEMAPHORE_IDENTITY_KEY, stringify(identity));
     } else {
       sessionStorage.removeItem(SEMAPHORE_IDENTITY_KEY);
     }
