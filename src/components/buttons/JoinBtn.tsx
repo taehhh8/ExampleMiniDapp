@@ -17,7 +17,7 @@ export default function JoinBtn({ id }: { id: string }) {
       alert("You need to login with LINE if you want to join the group");
       return;
     }
-    const idToken = liffObject.getIdToken();
+    const idToken = liffObject.getIDToken();
     const receipt = await fetch("/api/join", {
       method: "POST",
       headers: {
