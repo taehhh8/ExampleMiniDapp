@@ -50,7 +50,7 @@ export const Web3Provider: React.FC<{ children: React.ReactNode }> = ({
     const storedIsConnected = sessionStorage.getItem(WALLET_IS_CONNECTED_KEY);
     const storedIdentity = sessionStorage.getItem(SEMAPHORE_IDENTITY_KEY);
     if (storedProvider) {
-      setProvider(parse(storedProvider));
+      setProvider(new w3(parse(storedProvider)));
     }
     if (storedAccount) {
       setAccount(storedAccount);
@@ -65,7 +65,7 @@ export const Web3Provider: React.FC<{ children: React.ReactNode }> = ({
 
   useEffect(() => {
     if (provider) {
-      sessionStorage.setItem(WALLET_PROVIDER_KEY, stringify(provider));
+      sessionStorage.setItem(WALLET_PROVIDER_KEY, stringify(provider.provider));
     } else {
       sessionStorage.removeItem(WALLET_PROVIDER_KEY);
     }
