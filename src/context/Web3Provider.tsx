@@ -42,14 +42,6 @@ export const Web3Provider: React.FC<{ children: React.ReactNode }> = ({
   const [identity, setIdentity] = useState<Identity | null>(null);
   const { liffObject, liffError } = useLiff();
 
-  const getIdentity = async () => {
-    if (!provider || !account) {
-      return;
-    }
-    const identity = await createIdentity(provider, account, liffObject);
-    setIdentity(identity);
-  };
-
   // liff.login() make the page reload, so we need to load the state from the session storage
   useEffect(() => {
     const storedAccount = sessionStorage.getItem(WALLET_ACCOUNT_KEY);
@@ -114,7 +106,12 @@ export const Web3Provider: React.FC<{ children: React.ReactNode }> = ({
         const web3Provider = new w3(window.klaytn);
         // const web3Provider = new ethers.BrowserProvider(window.klaytn);
         const accounts = await web3Provider.send("eth_requestAccounts", []);
-        await getIdentity();
+        const identity = await createIdentity(
+          web3Provider,
+          accounts[0],
+          liffObject
+        );
+        setIdentity(identity);
         setProvider(web3Provider);
         setAccount(accounts[0]);
         setIsConnected(true);
