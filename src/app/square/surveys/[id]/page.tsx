@@ -1,16 +1,12 @@
-"use client";
-
-import React, { useState } from "react";
+import React from "react";
 import {
   countAnswers,
   getSurvey,
   getSurveyQuestions,
-  joinGroup,
 } from "../../../../hooks/backend/survey.tsx";
 import SubmitAnswerForm from "../../../../components/SubmitAnswerForm.tsx";
 import AnswerChart from "../../../../components/AnswerChart.tsx";
-import { useWeb3 } from "../../../../context/Web3Provider.tsx";
-import { useLiff } from "../../../../context/LiffProvider.tsx";
+import JoinBtn from "../../../../components/buttons/JoinBtn.tsx";
 
 export default async function Survey({
   params,
@@ -21,26 +17,6 @@ export default async function Survey({
   const info = await getSurvey(id);
   const questions = await getSurveyQuestions(id);
   const answers = await countAnswers(id, questions);
-  const { provider, identity, account } = useWeb3();
-  const { liffObject } = useLiff();
-
-  const joinRequest = async () => {
-    if (!provider) {
-      alert("Please connect the wallet first!");
-      return;
-    }
-    if (!identity) {
-      alert("You need to login with LINE if you want to join the group");
-      return;
-    }
-    const receipt = await joinGroup(
-      id,
-      identity.commitment,
-      identity.privateKey as string,
-      liffObject.getIdToken(),
-      account as string
-    );
-  };
 
   return (
     <div className="flex flex-col items-center">
@@ -50,9 +26,7 @@ export default async function Survey({
         <p className="mt-1 w-full break-words">{id}</p>
         <h3 className="text-xl font-bold mt-2">Description</h3>
         <p className="w-full break-words mt-1">{info.desc}</p>
-        <button onClick={joinRequest}>
-          Join Request First for your privacy
-        </button>
+        <JoinBtn id={id} />
       </div>
       <SubmitAnswerForm questions={questions} id={id} />
       <AnswerChart
