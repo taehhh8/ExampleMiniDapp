@@ -18,7 +18,7 @@ export default function JoinBtn({ id }: { id: string }) {
       return;
     }
     const idToken = liffObject.getIDToken();
-    const receipt = await fetch("/api/join", {
+    const result = await fetch("/api/join", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -31,10 +31,12 @@ export default function JoinBtn({ id }: { id: string }) {
         account,
       }),
     });
-    if (receipt.status === 1) {
+
+    if (result.status === 200) {
       alert("Successfully joined the group!");
     } else {
-      alert("Failed to join the group");
+      const error = JSON.parse((await result.json()).error);
+      alert(error.shortMessage + ": " + error.reason);
     }
   };
 

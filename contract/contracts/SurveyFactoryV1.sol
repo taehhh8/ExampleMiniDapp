@@ -37,9 +37,7 @@ contract SurveyFactoryV1 is Initializable, ReentrancyGuard {
         require(msg.value >= MIN_SURVEY_POOL, "At least 50 kaia required to create a survey");
         require(msg.value / (10000 - burnRate) * 10000 / _targetNumber >= MIN_SURVEY_REWARD, "At least 0.1 kaia required per target number");
 
-        uint256 groupId = semaphore.createGroup();
-
-        SurveyV1 survey = new SurveyV1{value:msg.value}(_title, _description, _questions, _targetNumber, _lockedUntil, burnRate, semaphore, manager, groupId);
+        SurveyV1 survey = new SurveyV1{value:msg.value}(_title, _description, _questions, _targetNumber, _lockedUntil, burnRate, semaphore, manager);
         surveys.push(address(survey));
         emit SurveyCreated(address(survey));
     }

@@ -131,7 +131,7 @@ const isValidToken = async (idToken: string) => {
       Authorization: `Bearer ${idToken}`,
     },
   });
-  if (valid.ok) throw Error("Invalid token");
+  if (!valid.ok) throw Error("Invalid token");
 
   return valid.json();
 };

@@ -32,6 +32,7 @@ export async function POST(req: NextRequest) {
       { status: 200 }
     );
   } catch (e) {
-    return NextResponse.json({ data: JSON.stringify(e) }, { status: 400 });
+    console.log(JSON.stringify(e));
+    return NextResponse.json({ error: JSON.stringify(e) }, { status: 400 });
   }
 }

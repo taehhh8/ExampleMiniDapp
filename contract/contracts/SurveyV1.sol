@@ -51,7 +51,7 @@ contract SurveyV1 is ISurvey {
     }
 
     // Constructor accepts raw byte data for the questions
-    constructor(string memory _title, string memory _description, Question[] memory _questions, uint256 _targetNumber, uint256 _lockedUntil, uint256 _burnRate, ISemaphore _semaphore, address _manager, uint256 _groupId) payable {
+    constructor(string memory _title, string memory _description, Question[] memory _questions, uint256 _targetNumber, uint256 _lockedUntil, uint256 _burnRate, ISemaphore _semaphore, address _manager) payable {
         SURVEY_FACTORY = msg.sender;
         surveyNumber = 0;
 
@@ -81,7 +81,7 @@ contract SurveyV1 is ISurvey {
         lockedUntil = timestamp + _lockedUntil * 1 days;
         owner = msg.sender;
         semaphore = ISemaphore(_semaphore);
-        groupId = _groupId;
+        groupId = semaphore.createGroup();
         manager = _manager;
         
         payable(0x000000000000000000000000000000000000dEaD).transfer(msg.value * burnRate / 10000);
