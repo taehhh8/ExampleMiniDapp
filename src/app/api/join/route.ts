@@ -16,7 +16,7 @@ export async function POST(req: NextRequest) {
 
     const receipt = await joinGroup(
       data.id,
-      data.commitment,
+      BigInt(data.commitment),
       data.signature,
       data.idToken,
       data.account
