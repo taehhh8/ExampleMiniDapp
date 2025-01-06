@@ -34,6 +34,9 @@ export default function JoinBtn({ id }: { id: string }) {
 
     if (result.status === 200) {
       alert("Successfully joined the group!");
+    } else if (result.status === 500) {
+      const error = JSON.parse((await result.json()).error);
+      console.log(error);
     } else {
       const error = JSON.parse((await result.json()).error);
       alert(error.shortMessage + ": " + error.reason);

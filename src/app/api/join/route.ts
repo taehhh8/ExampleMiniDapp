@@ -14,6 +14,7 @@ export async function POST(req: NextRequest) {
   try {
     const data: JoinGroupData = await req.json();
 
+    console.log(1);
     const receipt = await joinGroup(
       data.id,
       BigInt(data.commitment),
@@ -21,10 +22,11 @@ export async function POST(req: NextRequest) {
       data.idToken,
       data.account
     );
+    console.log(receipt);
     if (receipt.status !== 1) {
       return NextResponse.json(
-        { data: JSON.stringify(receipt) },
-        { status: 400 }
+        { error: JSON.stringify(receipt) },
+        { status: 500 }
       );
     }
     return NextResponse.json(
