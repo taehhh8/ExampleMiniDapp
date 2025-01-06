@@ -25,8 +25,8 @@ export async function POST(req: NextRequest) {
     console.log(receipt);
     if (receipt.status !== 1) {
       return NextResponse.json(
-        { error: JSON.stringify(receipt) },
-        { status: 500 }
+        { data: JSON.stringify(receipt) },
+        { status: 200 }
       );
     }
     return NextResponse.json(
