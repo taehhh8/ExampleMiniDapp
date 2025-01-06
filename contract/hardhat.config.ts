@@ -3,12 +3,6 @@ import "@nomicfoundation/hardhat-toolbox";
 import "hardhat-deploy";
 
 const config: HardhatUserConfig = {
-  solidity: "0.8.27",
-};
-
-export default config;
-
-module.exports = {
   defaultNetwork: "hardhat",
   networks: {
     localhost: {
@@ -53,3 +47,5 @@ module.exports = {
     timeout: 40000,
   },
 };
+
+export default config;

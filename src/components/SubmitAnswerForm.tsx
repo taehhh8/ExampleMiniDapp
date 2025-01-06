@@ -7,7 +7,6 @@ import { submitAnswer } from "../hooks/browser/survey.tsx";
 import { useRouter } from "next/navigation.js";
 import { Group } from "@semaphore-protocol/group";
 import { generateProof } from "@semaphore-protocol/proof";
-import { getGroupId, getGroupMembers } from "../hooks/backend/survey.tsx";
 
 export default function SubmitAnswerForm({
   id,
@@ -19,9 +18,17 @@ export default function SubmitAnswerForm({
   const { provider, identity } = useWeb3();
   const router = useRouter();
 
-  const getGroup = async () => {
-    const groupId = await getGroupId(id);
-    const members = await getGroupMembers(groupId);
+  const getGroup = async (id: string) => {
+    const result = await fetch("/api/join", {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        id,
+      }),
+    });
+    const members = await result.json();
     return new Group(members);
   };
 
@@ -41,7 +48,7 @@ export default function SubmitAnswerForm({
     const ans = Array.from(formData.values()).map((val) =>
       parseInt(val as string)
     );
-    const group = await getGroup();
+    const group = await getGroup(id);
     const proof = await generateProof(
       identity,
       group,

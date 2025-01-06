@@ -4,7 +4,6 @@ import factoryAbi from "../../contracts/SurveyFactoryV1.sol/SurveyFactoryV1.json
 
 export const getSurveyV1s = async () => {
   const surveyFactoryAddr = process.env.SURVEY_FACTORY_V1_CONTRACT_ADDRESS;
-  console.log("surveyFactoryAddr", surveyFactoryAddr);
   try {
     const factoryV1 = new ethers.Contract(
       surveyFactoryAddr as string,
