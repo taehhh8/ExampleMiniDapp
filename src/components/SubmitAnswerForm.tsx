@@ -9,6 +9,8 @@ import { Group } from "@semaphore-protocol/group";
 import { generateProof } from "@semaphore-protocol/proof";
 import { useLiff } from "../context/LiffProvider.tsx";
 
+const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3000";
+
 export default function SubmitAnswerForm({
   id,
   questions,
@@ -29,7 +31,7 @@ export default function SubmitAnswerForm({
   }, []);
 
   const getGroup = async (id: string) => {
-    const result = await fetch(`/api/group/members?id=${id}`, {
+    const result = await fetch(`${API_URL}/api/group/members?id=${id}`, {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
@@ -88,15 +90,12 @@ export default function SubmitAnswerForm({
       alert("Please connect the wallet first!");
       return;
     }
-    console.log(1);
     if (!identity || !liffObject.isLoggedIn()) {
       alert("You need to login with LINE if you want to join the group");
       return;
     }
-    console.log(2);
     const idToken = liffObject.getIDToken();
-    console.log(3);
-    const result = await fetch("/api/group/join", {
+    const result = await fetch(`${API_URL}/api/group/join`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -109,7 +108,6 @@ export default function SubmitAnswerForm({
         account,
       }),
     });
-    console.log(4);
 
     const receipt = await result.json();
     console.log(receipt);
