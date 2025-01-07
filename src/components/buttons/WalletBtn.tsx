@@ -12,7 +12,7 @@ const WalletButton: React.FC = () => {
         <div>
           <button
             onClick={disconnectWallet}
-            className="bg-red-500 px-4 py-2 text-white rounded-lg"
+            className="bg-slate-500 px-4 py-2 text-white rounded-lg"
           >
             <p>
               {account?.substring(0, 5) +
@@ -24,7 +24,7 @@ const WalletButton: React.FC = () => {
       ) : (
         <button
           onClick={connectWallet}
-          className="bg-lime-400 px-4 py-2 text-white rounded-lg"
+          className="bg-blue-400 px-4 py-2 text-white rounded-lg"
         >
           Connect
         </button>

@@ -1,12 +1,13 @@
 "use client";
 
-import React from "react";
+import React, { use, useEffect, useState } from "react";
 import { Question } from "../types/index.ts";
 import { useWeb3 } from "../context/Web3Provider.tsx";
 import { submitAnswer } from "../hooks/browser/survey.tsx";
 import { useRouter } from "next/navigation.js";
 import { Group } from "@semaphore-protocol/group";
 import { generateProof } from "@semaphore-protocol/proof";
+import { useLiff } from "../context/LiffProvider.tsx";
 
 export default function SubmitAnswerForm({
   id,
@@ -15,21 +16,27 @@ export default function SubmitAnswerForm({
   id: string;
   questions: Question[];
 }) {
-  const { provider, identity } = useWeb3();
+  const [members, setMembers] = useState([]);
+  const [groupId, setGroupId] = useState("");
+  const { provider, identity, account } = useWeb3();
+  const { liffObject } = useLiff();
   const router = useRouter();
 
+  useEffect(() => {
+    const { members, groupId }: any = getGroup(id);
+    setMembers(members);
+    setGroupId(groupId);
+  }, []);
+
   const getGroup = async (id: string) => {
-    const result = await fetch("/api/join", {
+    const result = await fetch(`/api/group/members?id=${id}`, {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify({
-        id,
-      }),
     });
-    const members = await result.json();
-    return new Group(members);
+    const jsonResult = await result.json();
+    return JSON.parse(jsonResult.data);
   };
 
   const submitHandler = async (e: React.FormEvent) => {
@@ -48,13 +55,13 @@ export default function SubmitAnswerForm({
     const ans = Array.from(formData.values()).map((val) =>
       parseInt(val as string)
     );
-    const group = await getGroup(id);
     const proof = await generateProof(
       identity,
-      group,
+      new Group(members),
       new Uint8Array(ans),
-      group.root
+      groupId
     );
+
     const answer = {
       respondent: signer.address,
       answers: ans,
@@ -69,6 +76,43 @@ export default function SubmitAnswerForm({
       router.push(`/square/surveys/${id}`);
     } else {
       alert("Failed to submit");
+    }
+  };
+
+  const joinRequest = async () => {
+    if (!provider) {
+      alert("Please connect the wallet first!");
+      return;
+    }
+    if (!identity || !liffObject.isLoggedIn()) {
+      alert("You need to login with LINE if you want to join the group");
+      return;
+    }
+    const idToken = liffObject.getIDToken();
+    const result = await fetch("/api/group/join", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        id,
+        commitment: identity.commitment.toString(),
+        signature: identity.privateKey,
+        idToken,
+        account,
+      }),
+    });
+
+    const receipt = await result.json();
+    console.log(receipt);
+    if (result.status === 200) {
+      alert("Successfully joined the group!");
+    } else if (result.status === 500) {
+      const error = JSON.parse((await result.json()).error);
+      console.log(error);
+    } else {
+      const error = JSON.parse((await result.json()).error);
+      alert(error.shortMessage + ": " + error.reason);
     }
   };
 
@@ -97,9 +141,21 @@ export default function SubmitAnswerForm({
           </div>
         ))}
         <div className="flex flex-row justify-end">
-          <button className="bg-purple-400 py-2 px-4 rounded-xl" type="submit">
-            Submit
-          </button>
+          {identity && identity.commitment.toString() in members ? (
+            <button
+              className="bg-purple-400 py-2 px-4 rounded-xl"
+              type="submit"
+            >
+              Submit
+            </button>
+          ) : (
+            <button
+              onClick={joinRequest}
+              className="bg-slate-400 hover:bg-slate-600 text-white font-bold py-2 px-4 rounded mt-2"
+            >
+              Join before submit
+            </button>
+          )}
         </div>
       </form>
     </div>

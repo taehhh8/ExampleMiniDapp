@@ -9,7 +9,13 @@ export const getGroupMembers = async (groupId: string) => {
   const semaphoreSubgraph = new SemaphoreSubgraph(
     process.env.SEMAPHORE_SUBGRAPH_URL as string
   );
-  return await semaphoreSubgraph.getGroupMembers(groupId);
+  try {
+    const members = await semaphoreSubgraph.getGroupMembers(groupId);
+    return members;
+  } catch (e) {
+    console.log("error", e);
+    return [];
+  }
 };
 
 const getSurveyV1 = (address: string) => {
@@ -71,6 +77,7 @@ export const countAnswers = async (address: string, questions: Question[]) => {
     new Array(questions[0].options.length).fill(0)
   );
   answers.map((answer: Answer) => {
+    // answer.answers.map((ans: number, i: number) => {
     answer.answers.map((ans: number, i: number) => {
       answerCnt[i][ans] += 1;
     });
@@ -121,7 +128,7 @@ const daysLeft = (duration: bigint) => {
 export const getGroupId = async (surveyAddress: string) => {
   const survey = getSurveyV1(surveyAddress);
   const groupId = await survey.groupId();
-  return groupId;
+  return groupId.toString();
 };
 
 const isValidToken = async (idToken: string) => {
@@ -141,15 +148,19 @@ const verifyLineIdentity = async (
   address: string,
   signature: ethers.SignatureLike
 ) => {
-  const hexMsg = ethers.hexlify(
-    ethers.toUtf8Bytes("hello destat" + userId + address)
-  );
-  const verifiedAddr = await provider.send("klay_recoverFromMessage", [
-    address,
-    hexMsg,
-    signature,
-    "latest",
-  ]);
+  // When you used kaia_signLegacy or kaia_sign, you should use the following code
+  // const hexMsg = ethers.hexlify(
+  //   ethers.toUtf8Bytes("hello destat" + userId + address)
+  // );
+  // const verifiedAddr = await provider.send("klay_recoverFromMessage", [
+  //   address,
+  //   hexMsg,
+  //   signature,
+  //   "latest",
+  // ]);
+
+  const msg = "hello destat" + userId + address;
+  const verifiedAddr = ethers.verifyMessage(msg, signature);
   if (verifiedAddr.toLowerCase() !== address.toLowerCase())
     throw Error("Invalid signature");
 };

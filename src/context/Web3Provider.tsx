@@ -99,52 +99,52 @@ export const Web3Provider: React.FC<{ children: React.ReactNode }> = ({
 
   const connectWallet = async () => {
     try {
-      if (!window.klaytn) {
-        alert("kaia wallet is not installed!");
-        return;
-      }
+      // if (!window.klaytn) {
+      //   alert("kaia wallet is not installed!");
+      //   return;
+      // }
 
-      if (liffObject?.isLoggedIn()) {
-        const web3Provider = new w3(window.klaytn);
-        // const web3Provider = new ethers.BrowserProvider(window.klaytn);
-        const accounts = await web3Provider.send("eth_requestAccounts", []);
-        const identity = await createIdentity(
-          web3Provider,
-          accounts[0],
-          liffObject
-        );
-        setIdentity(identity);
-        setProvider(web3Provider);
-        setAccount(accounts[0]);
-        setIsConnected(true);
-      } else {
-        liffObject?.login();
-      }
-
-      // const sdk = await DappPortalSDK.init({
-      //   clientId: process.env.NEXT_PUBLIC_DAPP_PORTAL_CLIENT_ID as string,
-      //   chainId: process.env.NEXT_PUBLIC_CHAIN_ID,
-      // });
-      // const provider = sdk.getWalletProvider();
-      // const web3Provider = new w3(provider);
-      // const accounts = await web3Provider.send("kaia_requestAccounts", []);
-
-      // if (
-      //   provider.getWalletType() === WalletType.Liff &&
-      //   liffObject.isInClient() &&
-      //   liffObject.isLoggedIn()
-      // ) {
+      // if (liffObject?.isLoggedIn()) {
+      //   const web3Provider = new w3(window.klaytn);
+      //   // const web3Provider = new ethers.BrowserProvider(window.klaytn);
+      //   const accounts = await web3Provider.send("eth_requestAccounts", []);
       //   const identity = await createIdentity(
       //     web3Provider,
       //     accounts[0],
       //     liffObject
       //   );
       //   setIdentity(identity);
+      //   setProvider(web3Provider);
+      //   setAccount(accounts[0]);
+      //   setIsConnected(true);
+      // } else {
+      //   alert("Please login with LINE first!");
       // }
 
-      // setProvider(web3Provider);
-      // setAccount(accounts[0]);
-      // setIsConnected(true);
+      const sdk = await DappPortalSDK.init({
+        clientId: process.env.NEXT_PUBLIC_DAPP_PORTAL_CLIENT_ID as string,
+        chainId: process.env.NEXT_PUBLIC_CHAIN_ID,
+      });
+      const provider = sdk.getWalletProvider();
+      const web3Provider = new w3(provider);
+      const accounts = await web3Provider.send("kaia_requestAccounts", []);
+
+      if (
+        (provider.getWalletType() === WalletType.Liff ||
+          provider.getWalletType() === WalletType.Web) &&
+        liffObject.isLoggedIn()
+      ) {
+        const identity = await createIdentity(
+          web3Provider,
+          accounts[0],
+          liffObject
+        );
+        setIdentity(identity);
+      }
+
+      setProvider(web3Provider);
+      setAccount(accounts[0]);
+      setIsConnected(true);
     } catch (error) {
       console.log("error", error);
     }
@@ -155,6 +155,9 @@ export const Web3Provider: React.FC<{ children: React.ReactNode }> = ({
       setProvider(null);
       setAccount(null);
       setIsConnected(false);
+      sessionStorage.removeItem(SEMAPHORE_IDENTITY_KEY);
+      sessionStorage.removeItem(WALLET_ACCOUNT_KEY);
+      sessionStorage.removeItem(WALLET_IS_CONNECTED_KEY);
     }
   };
 
