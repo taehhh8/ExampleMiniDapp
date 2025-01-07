@@ -97,7 +97,7 @@ export default function SubmitAnswerForm({
       alert("You need to login with LINE if you want to join the group");
       return;
     }
-    const idToken = liffObject.getIDToken();
+    const idToken = liffObject.getAccessToken();
     console.log(identity);
     console.log(idToken);
     const result = await fetch(`${API_URL}/api/group/join`, {
