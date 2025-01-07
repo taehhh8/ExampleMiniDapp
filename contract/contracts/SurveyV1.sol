@@ -21,6 +21,7 @@ contract SurveyV1 is ISurvey {
     uint256 public burnRate;
     Question[] public questions;
     Answer[] public answers;
+    address[] public respondents;
 
     bool public finished = false;
     uint256 public timestamp;
@@ -93,8 +94,11 @@ contract SurveyV1 is ISurvey {
         require(surveyNumber < targetNumber, "Survey is already full");
         require(block.timestamp < lockedUntil, "Survey is finished");
 
-        uint256 message = this.uint8ArrayToUint256(_answer.answers);
+        for (uint i=0; i<respondents.length; i++) {
+            require(respondents[i] != msg.sender, "Already answered");
+        }
 
+        uint256 message = this.uint8ArrayToUint256(_answer.answers);
         ISemaphore.SemaphoreProof memory proof = ISemaphore.SemaphoreProof(
             _answer.merkleTreeDepth,
             _answer.merkleTreeRoot,
@@ -116,6 +120,7 @@ contract SurveyV1 is ISurvey {
         // Increment the survey number
         payable(msg.sender).transfer(reward);
         surveyNumber++;
+        respondents.push(msg.sender);
     }
 
     function getQuestions() public view returns (Question[] memory) {
@@ -154,10 +159,11 @@ contract SurveyV1 is ISurvey {
 
     function uint8ArrayToUint256(uint8[] memory data) public pure returns (uint256) {
         require(data.length <= 32, "uint8[] exceeds 32 bytes");
+
         uint256 result = 0;
 
         for (uint256 i = 0; i < data.length; i++) {
-            result |= uint256(data[i]) << (8 * (31 - i));
+            result |= uint256(data[i]) << (8 * (data.length - 1 - i));
         }
 
         return result;
