@@ -88,11 +88,14 @@ export default function SubmitAnswerForm({
       alert("Please connect the wallet first!");
       return;
     }
+    console.log(1);
     if (!identity || !liffObject.isLoggedIn()) {
       alert("You need to login with LINE if you want to join the group");
       return;
     }
+    console.log(2);
     const idToken = liffObject.getIDToken();
+    console.log(3);
     const result = await fetch("/api/group/join", {
       method: "POST",
       headers: {
@@ -106,6 +109,7 @@ export default function SubmitAnswerForm({
         account,
       }),
     });
+    console.log(4);
 
     const receipt = await result.json();
     console.log(receipt);
