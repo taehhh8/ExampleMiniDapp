@@ -1,9 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import {
-  getGroupId,
-  getGroupMembers,
-  joinGroup,
-} from "../../../../hooks/backend/survey";
+import { joinGroup } from "../../../../hooks/backend/survey";
 import { ethers } from "ethers";
 
 interface JoinGroupData {
@@ -18,7 +14,6 @@ export async function POST(req: NextRequest) {
   try {
     const data: JoinGroupData = await req.json();
 
-    console.log(1);
     const receipt = await joinGroup(
       data.id,
       BigInt(data.commitment),

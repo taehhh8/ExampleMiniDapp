@@ -1,6 +1,6 @@
 "use client";
 
-import React, { use, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Question } from "../types/index.ts";
 import { useWeb3 } from "../context/Web3Provider.tsx";
 import { submitAnswer } from "../hooks/browser/survey.tsx";
@@ -18,16 +18,19 @@ export default function SubmitAnswerForm({
   id: string;
   questions: Question[];
 }) {
-  const [members, setMembers] = useState([]);
-  const [groupId, setGroupId] = useState("");
+  const [members, setMembers] = useState<string[]>([]);
+  const [groupId, setGroupId] = useState<string>("");
   const { provider, identity, account } = useWeb3();
   const { liffObject } = useLiff();
   const router = useRouter();
 
   useEffect(() => {
-    const { members, groupId }: any = getGroup(id);
-    setMembers(members);
-    setGroupId(groupId);
+    const fetchGroup = async () => {
+      const { members, groupId } = await getGroup(id);
+      setMembers(members);
+      setGroupId(groupId);
+    };
+    fetchGroup();
   }, []);
 
   const getGroup = async (id: string) => {
@@ -47,7 +50,7 @@ export default function SubmitAnswerForm({
 
   const submitHandler = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!provider) {
+    if (!provider || !account) {
       alert("Please connect the wallet first!");
       return;
     }
@@ -57,19 +60,19 @@ export default function SubmitAnswerForm({
     }
     const form = e.target as HTMLFormElement;
     const formData = new FormData(form);
-    const signer = await provider.getSigner();
     const ans = Array.from(formData.values()).map((val) =>
       parseInt(val as string)
     );
+    const group = new Group(members);
     const proof = await generateProof(
       identity,
-      new Group(members),
+      group,
       new Uint8Array(ans),
       groupId
     );
 
     const answer = {
-      respondent: signer.address,
+      respondent: account,
       answers: ans,
       merkleTreeDepth: proof.merkleTreeDepth,
       merkleTreeRoot: proof.merkleTreeRoot,
@@ -109,9 +112,9 @@ export default function SubmitAnswerForm({
       }),
     });
 
-    const receipt = await result.json();
-    console.log(receipt);
     if (result.status === 200) {
+      const receipt = await result.json();
+      console.log(receipt);
       alert("Successfully joined the group!");
     } else if (result.status === 500) {
       const error = JSON.parse((await result.json()).error);
@@ -125,9 +128,7 @@ export default function SubmitAnswerForm({
   const isMember = () => {
     if (!identity) return false;
     if (!members) return false;
-    console.log(identity);
-    console.log(members);
-    return identity.commitment.toString() in members;
+    return members.includes(identity.commitment.toString());
   };
 
   return (
@@ -165,6 +166,7 @@ export default function SubmitAnswerForm({
           ) : (
             <button
               onClick={joinRequest}
+              type="button"
               className="bg-slate-400 hover:bg-slate-600 text-white font-bold py-2 px-4 rounded mt-2"
             >
               Join before submit
