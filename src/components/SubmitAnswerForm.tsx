@@ -35,6 +35,10 @@ export default function SubmitAnswerForm({
         "Content-Type": "application/json",
       },
     });
+    if (result.status !== 200) {
+      console.log("Failed to fetch group members");
+      return { members: [], groupId: "" };
+    }
     const jsonResult = await result.json();
     return JSON.parse(jsonResult.data);
   };
