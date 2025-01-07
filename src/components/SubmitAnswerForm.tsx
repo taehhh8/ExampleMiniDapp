@@ -98,8 +98,6 @@ export default function SubmitAnswerForm({
       return;
     }
     const idToken = liffObject.getAccessToken();
-    console.log(identity);
-    console.log(idToken);
     const result = await fetch(`${API_URL}/api/group/join`, {
       method: "POST",
       headers: {

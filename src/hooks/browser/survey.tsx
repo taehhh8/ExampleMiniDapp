@@ -10,8 +10,8 @@ const getSurveyV1 = (surveyAddress: string, signer: ethers.JsonRpcSigner) =>
 
 export const submitAnswer = async (
   surveyAddress: string,
-  provider: Web3Provider,
-  // provider: ethers.BrowserProvider,
+  // provider: Web3Provider,
+  provider: ethers.BrowserProvider,
   answer: Answer
 ) => {
   const signer = await provider.getSigner(0);
