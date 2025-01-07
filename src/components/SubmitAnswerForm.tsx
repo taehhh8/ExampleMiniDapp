@@ -120,6 +120,14 @@ export default function SubmitAnswerForm({
     }
   };
 
+  const isMember = () => {
+    if (!identity) return false;
+    if (!members) return false;
+    console.log(identity);
+    console.log(members);
+    return identity.commitment.toString() in members;
+  };
+
   return (
     <div className="bg-purple-50 m-3 px-7 py-4 rounded-lg lg:w-3/5 w-80">
       <form onSubmit={submitHandler}>
@@ -145,7 +153,7 @@ export default function SubmitAnswerForm({
           </div>
         ))}
         <div className="flex flex-row justify-end">
-          {identity && identity.commitment.toString() in members ? (
+          {isMember() ? (
             <button
               className="bg-purple-400 py-2 px-4 rounded-xl"
               type="submit"
