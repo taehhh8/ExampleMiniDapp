@@ -21,7 +21,7 @@
     "@semaphore-protocol/contracts": "^4.7.2",
     "@types/react": "^18.3.12",
     "autoprefixer": "^10.4.20",
-    "hardhat": "^2.22.15",
+    "hardhat": "^2.22.17",
     "hardhat-deploy": "^0.14.0",
     "mocha": "^10.8.2",
     "postcss": "^8.4.49",
