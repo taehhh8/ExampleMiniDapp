@@ -8,7 +8,7 @@ declare global {
 }
 
 import React, { createContext, useContext, useEffect, useState } from "react";
-import DappPortalSDK, { WalletType } from "@linenext/dapp-portal-sdk";
+import { WalletType } from "@linenext/dapp-portal-sdk";
 import { ethers } from "ethers";
 import { Web3Provider as w3 } from "@kaiachain/ethers-ext/v6";
 import { useLiff } from "./LiffProvider.tsx";
@@ -39,7 +39,7 @@ export const Web3Provider: React.FC<{ children: React.ReactNode }> = ({
   const [account, setAccount] = useState<string | null>(null);
   const [isConnected, setIsConnected] = useState<boolean>(false);
   const [identity, setIdentity] = useState<Identity | null>(null);
-  const { liffObject, liffError } = useLiff();
+  const { liffObject, liffError, dappPortalSDK } = useLiff();
 
   // liff.login() make the page reload, so we need to load the state from the session storage
   useEffect(() => {
@@ -121,15 +121,12 @@ export const Web3Provider: React.FC<{ children: React.ReactNode }> = ({
       //   alert("Please login with LINE first!");
       // }
 
-      const sdk = await DappPortalSDK.init({
-        clientId: process.env.NEXT_PUBLIC_DAPP_PORTAL_CLIENT_ID as string,
-        chainId: process.env.NEXT_PUBLIC_CHAIN_ID,
-      });
-      const provider = sdk.getWalletProvider();
+      const provider = dappPortalSDK?.getWalletProvider();
       const web3Provider = new w3(provider);
       const accounts = await web3Provider.send("kaia_requestAccounts", []);
 
       if (
+        provider &&
         (provider.getWalletType() === WalletType.Liff ||
           provider.getWalletType() === WalletType.Web) &&
         liffObject.isLoggedIn()

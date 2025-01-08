@@ -11,8 +11,6 @@ export default function LineLoginBtn() {
     const login = await liffObject.login();
     if (!login) {
       return;
-    } else {
-      alert("Successfully logged in!");
     }
   };
 
