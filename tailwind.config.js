@@ -2,7 +2,11 @@
 module.exports = {
   content: ["./src/**/*.{js,ts,jsx,tsx,mdx}"],
   theme: {
-    extend: {},
+    extend: {
+      fontFamily: {
+        sans: ['"Apple SD Gothic Neo"', '"Noto Sans KR"', "sans-serif"],
+      },
+    },
   },
   plugins: [require("tailwind-scrollbar-hide")],
 };

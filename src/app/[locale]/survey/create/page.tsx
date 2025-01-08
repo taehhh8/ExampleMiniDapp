@@ -3,8 +3,13 @@
 import { useForm, useFieldArray } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useWeb3 } from "../../../context/Web3Provider.tsx";
-import { createSurvey } from "../../../hooks/browser/factory.tsx";
+import { useWeb3 } from "../../../../context/Web3Provider.tsx";
+import { createSurvey } from "../../../../hooks/browser/factory.tsx";
+import {
+  surveyCreateTranslations,
+  SurveyCreateMessages,
+} from "../../../../messages";
+import { useParams } from "next/navigation";
 import { useRouter } from "next/navigation.js";
 
 // Define the form schema using zod
@@ -35,6 +40,10 @@ const formSchema = z.object({
 type FormData = z.infer<typeof formSchema>;
 
 export default function DynamicForm() {
+  const params = useParams();
+  const locale = params.locale as keyof typeof surveyCreateTranslations;
+  const messages: SurveyCreateMessages =
+    surveyCreateTranslations[locale] || surveyCreateTranslations.en;
   const { provider } = useWeb3();
   const router = useRouter();
 
@@ -42,7 +51,6 @@ export default function DynamicForm() {
     control,
     handleSubmit,
     register,
-    setValue,
     getValues,
     formState: { errors },
   } = useForm<FormData>({
@@ -112,7 +120,7 @@ export default function DynamicForm() {
         className="space-y-4 mb-5 w-80 lg:w-3/5 md:w-3/5 bg-slate-200 p-4 rounded-lg"
       >
         <div>
-          <label className="block font-bold">Title</label>
+          <label className="block font-bold">{messages.title}</label>
           <input
             {...register("title")}
             className="border p-2 w-full"
@@ -124,7 +132,7 @@ export default function DynamicForm() {
         </div>
 
         <div>
-          <label className="block font-bold">Description</label>
+          <label className="block font-bold">{messages.description}</label>
           <textarea
             {...register("desc")}
             className="border p-2 w-full"
@@ -134,7 +142,7 @@ export default function DynamicForm() {
         </div>
 
         <div>
-          <label className="block font-bold">Questions</label>
+          <label className="block font-bold">{messages.questions}</label>
           {fields.map((field, index) => (
             <div key={field.id} className="border p-4 mb-4 space-y-2">
               <div>
@@ -151,7 +159,7 @@ export default function DynamicForm() {
               </div>
 
               <div>
-                <label className="block font-bold">Options</label>
+                <label className="block font-bold">{messages.options}</label>
                 {field.options.map((_, optionIndex) => (
                   <div
                     key={optionIndex}
@@ -169,7 +177,7 @@ export default function DynamicForm() {
                       onClick={() => removeOption(index, optionIndex)}
                       className="bg-red-500 text-white px-2 py-1 rounded"
                     >
-                      Remove
+                      {messages.removeOption}
                     </button>
                     {errors.questions?.[index]?.options?.[optionIndex] && (
                       <p className="text-red-500">
@@ -184,7 +192,7 @@ export default function DynamicForm() {
                   onClick={() => appendOption(index)}
                   className="text-blue-500 underline"
                 >
-                  Add Option
+                  {messages.addOption}
                 </button>
               </div>
 
@@ -193,7 +201,7 @@ export default function DynamicForm() {
                 onClick={() => remove(index)}
                 className="bg-red-500 text-white px-2 py-1 rounded"
               >
-                Remove Question
+                {messages.removeQuestion}
               </button>
             </div>
           ))}
@@ -203,12 +211,12 @@ export default function DynamicForm() {
             onClick={() => append({ question: "", options: ["", ""] })}
             className="text-blue-500 underline"
           >
-            Add Question
+            {messages.addQuestion}
           </button>
         </div>
 
         <div>
-          <label className="block font-bold">Target Number</label>
+          <label className="block font-bold">{messages.targetNumber}</label>
           <input
             {...register("targetNumber")}
             className="border p-2 w-full"
@@ -220,7 +228,7 @@ export default function DynamicForm() {
         </div>
 
         <div>
-          <label className="block font-bold">Duration</label>
+          <label className="block font-bold">{messages.duration}</label>
           <input
             {...register("duration")}
             className="border p-2 w-full"
@@ -232,7 +240,7 @@ export default function DynamicForm() {
         </div>
 
         <div>
-          <label className="block font-bold">Reward Pool</label>
+          <label className="block font-bold">{messages.rewardPool}</label>
           <input
             {...register("rewardPool")}
             className="border p-2 w-full"
@@ -247,7 +255,7 @@ export default function DynamicForm() {
           type="submit"
           className="flex flex-col bg-blue-500 text-white p-2 rounded"
         >
-          Submit
+          {messages.submit}
         </button>
       </form>
     </div>

@@ -23,7 +23,7 @@ export default function LineLoginBtn() {
       }}
       className="bg-green-400 hover:bg-green-700 text-white font-bold py-2 px-4 rounded mt-2"
     >
-      Login with LINE
+      LINE Login
     </button>
   );
 }

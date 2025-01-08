@@ -4,9 +4,10 @@ import React, { useState } from "react";
 import Link from "next/link";
 import Dropdown from "./buttons/Dropdown";
 import WalletBtn from "./buttons/WalletBtn";
-import { useWeb3 } from "../context/Web3Provider";
 import { useLiff } from "../context/LiffProvider";
 import LineLoginBtn from "./buttons/LineLoginBtn";
+import { useParams } from "next/navigation";
+import { navTranslations, NavMessages } from "../messages";
 
 export interface MenuItem {
   title: string;
@@ -14,29 +15,33 @@ export interface MenuItem {
   children?: MenuItem[];
 }
 
-const menuItems: MenuItem[] = [
-  {
-    title: "Survey",
-    children: [
-      {
-        title: "Surveys",
-        route: "/square/surveys",
-      },
-    ],
-  },
-  {
-    title: "Create",
-    route: "/survey/create",
-  },
-  {
-    title: "MyPage",
-    route: "/survey/manage",
-  },
-];
-
 export default function Nav() {
+  const params = useParams();
   const [isNavOpen, setIsNavOpen] = useState(false);
   const { liffObject } = useLiff();
+
+  const locale = params.locale as keyof typeof navTranslations;
+  const messages: NavMessages = navTranslations[locale] || navTranslations.en;
+
+  const menuItems: MenuItem[] = [
+    {
+      title: messages.survey,
+      children: [
+        {
+          title: messages.survey,
+          route: "/square/surveys",
+        },
+      ],
+    },
+    {
+      title: messages.create,
+      route: "/survey/create",
+    },
+    {
+      title: messages.myPage,
+      route: "/survey/manage",
+    },
+  ];
 
   return (
     <>

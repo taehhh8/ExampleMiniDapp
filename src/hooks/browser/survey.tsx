@@ -10,8 +10,8 @@ const getSurveyV1 = (surveyAddress: string, signer: ethers.JsonRpcSigner) =>
 
 export const submitAnswer = async (
   surveyAddress: string,
-  // provider: Web3Provider,
-  provider: ethers.BrowserProvider,
+  provider: Web3Provider,
+  // provider: ethers.BrowserProvider,
   answer: Answer
 ) => {
   const signer = await provider.getSigner(0);
@@ -42,7 +42,6 @@ export const createIdentity = async (
     const msg = "hello destat" + uid + address;
     const hexMsg = ethers.hexlify(ethers.toUtf8Bytes(msg));
     // const secret = await web3.send("kaia_signLegacy", [address, hexMsg]);
-    // It's going to be changed to personal_sign after the next release
     const secret = await web3.send("personal_sign", [hexMsg, address]);
     return new Identity(secret);
   } catch (e) {

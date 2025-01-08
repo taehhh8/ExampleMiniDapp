@@ -8,7 +8,7 @@ export default function SurveyCard({
   desc,
   reward,
   remaining,
-  repondents,
+  respondents,
   daysLeft,
   finished,
 }: {
@@ -17,7 +17,7 @@ export default function SurveyCard({
   desc: string;
   reward: ethers.BigNumberish;
   remaining: number;
-  repondents: number;
+  respondents: number;
   daysLeft: number;
   finished: boolean;
 }) {
@@ -86,7 +86,7 @@ export default function SurveyCard({
               </div>
               <div className="flex flex-col">
                 <span className="text-white">Respondents</span>
-                <span className="text-white font-bold">{repondents}</span>
+                <span className="text-white font-bold">{respondents}</span>
               </div>
             </div>
           </div>

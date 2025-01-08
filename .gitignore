@@ -21,3 +21,4 @@ contract/artifacts
 contract/cache
 contract/deployments
 contract/typechain-types
+.vercel

@@ -29,6 +29,7 @@ export const createSurvey = async ({
   rewardPool,
 }: {
   provider: ethers.BrowserProvider;
+  // provider: Web3Provider;
   title: string;
   desc: string;
   questions: Question[];
