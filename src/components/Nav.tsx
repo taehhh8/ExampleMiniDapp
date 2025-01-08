@@ -24,33 +24,37 @@ export default function Nav() {
   const messages: NavMessages = navTranslations[locale] || navTranslations.en;
 
   const menuItems: MenuItem[] = [
+    // {
+    //   title: messages.survey,
+    //   children: [
+    //     {
+    //       title: messages.survey,
+    //       route: "/square/surveys",
+    //     },
+    //   ],
+    // },
     {
       title: messages.survey,
-      children: [
-        {
-          title: messages.survey,
-          route: "/square/surveys",
-        },
-      ],
+      route: "/square/surveys",
     },
     {
       title: messages.create,
       route: "/survey/create",
     },
-    {
-      title: messages.myPage,
-      route: "/survey/manage",
-    },
+    // {
+    //   title: messages.myPage,
+    //   route: "/survey/manage",
+    // },
   ];
 
   return (
     <>
       <div className="flex justify-start w-1/3 text-4xl font-bold text-violet-300">
-        <Link href="/">
+        <Link href="/square/surveys">
           <h1>DESTAT</h1>
         </Link>
       </div>
-      <div className="lg:flex md:flex justify-center w-1/3 gap-8 text-white hidden">
+      <div className="lg:flex md:flex justify-evenly w-1/3 ml-4 text-white hidden">
         {menuItems.map((item) => {
           return item.hasOwnProperty("children") ? (
             <Dropdown key={item.title} item={item} />

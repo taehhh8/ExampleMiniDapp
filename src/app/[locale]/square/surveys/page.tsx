@@ -24,7 +24,7 @@ export default async function SurveysPage({
   const endingSoon = data.filter((survey) => survey.daysleft < 2);
 
   return (
-    <div className="flex flex-col">
+    <div className="flex flex-col mt-5">
       {hotTopics.length !== 0 ? (
         <div>
           <h1 className="flex flex-col items-center text-3xl font-bold font-sans text-red-400 mx-5">
