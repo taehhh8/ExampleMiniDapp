@@ -20,7 +20,7 @@ export default function SubmitAnswerForm({
 }) {
   const [members, setMembers] = useState<string[]>([]);
   const [groupId, setGroupId] = useState<string>("");
-  const [isJoined, setIsJoined] = useState<boolean>(false);
+  const [isJoining, setIsJoining] = useState<boolean>(false);
   const { provider, identity, account } = useWeb3();
   const { liffObject } = useLiff();
   const router = useRouter();
@@ -116,11 +116,11 @@ export default function SubmitAnswerForm({
     if (result.status === 200) {
       const receipt = await result.json();
       console.log(receipt);
-      setIsJoined(false);
+      setIsJoining(true);
       do {
         const { members } = await getGroup(id);
         if (members.includes(identity.commitment.toString())) {
-          setIsJoined(true);
+          setIsJoining(false);
           break;
         }
       } while (true);
@@ -183,7 +183,7 @@ export default function SubmitAnswerForm({
           )}
         </div>
       </form>
-      {!isJoined && (
+      {isJoining && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
           <div className="animate-spin rounded-full border-4 border-t-4 border-gray-200 h-12 w-12 bg-gradient-to-r from-gray-300 via-gray-400 to-gray-300 opacity-60"></div>
         </div>
