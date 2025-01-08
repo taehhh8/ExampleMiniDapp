@@ -3,19 +3,18 @@ import SurveyCard from "../../../../components/SurveyCard";
 import { getAllSurveyV1s } from "../../../../hooks/backend/survey";
 import { surveysTranslations } from "../../../../messages";
 
-type Props = {
-  params: {
-    locale: string;
-  };
-};
-
 export const metadata = {
   title: "Surveys",
 };
 
-export default async function SurveysPage({ params }: Props) {
+export default async function SurveysPage({
+  params,
+}: {
+  params: Promise<{ locale: string }>;
+}) {
   const data = await getAllSurveyV1s();
   const { locale } = await params;
+
   const messages = surveysTranslations[locale] || surveysTranslations.en;
 
   const hotTopics = data
