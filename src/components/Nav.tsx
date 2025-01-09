@@ -48,10 +48,6 @@ export default function Nav() {
     // },
   ];
 
-  const test = async () => {
-    console.log(liffObject.isLoggedIn());
-  };
-
   return (
     <>
       <div className="flex justify-start w-1/3 text-4xl font-bold text-violet-300">
@@ -74,7 +70,6 @@ export default function Nav() {
           );
         })}
       </div>
-      <button onClick={test}>test</button>
       <div className="flex justify-end lg:w-1/3 md:w-1/3 w-2/4 ml-5">
         {liffObject && liffObject.isLoggedIn() ? (
           <WalletBtn />
