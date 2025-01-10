@@ -22,3 +22,4 @@ contract/cache
 contract/deployments
 contract/typechain-types
 .vercel
+package-lock.json
