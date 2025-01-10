@@ -11,9 +11,9 @@ interface buyReq {
   testMode: boolean;
 }
 
-const confirmUrl = (process.env.RPC_URL + "/api/store/callback") as string;
-const lockUrl = (process.env.RPC_URL + "/api/store/callback") as string;
-const unlockUrl = (process.env.RPC_URL + "/api/store/callback") as string;
+const confirmUrl = (process.env.API_URL + "/api/store/callback") as string;
+const lockUrl = (process.env.API_URL + "/api/store/callback") as string;
+const unlockUrl = (process.env.API_URL + "/api/store/callback") as string;
 
 export async function POST(req: NextRequest) {
   try {

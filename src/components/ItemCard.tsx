@@ -17,8 +17,6 @@ export default function ItemCard(Props: ItemCardProps) {
     console.log(provider, account, pProvider);
     if (!pProvider || !account || !provider) return;
 
-    console.log(process.env.API_URL + "/api/store");
-
     const result = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/store`, {
       method: "POST",
       headers: {
