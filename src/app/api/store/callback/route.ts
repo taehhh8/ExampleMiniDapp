@@ -5,7 +5,7 @@ export async function POST(req: NextRequest) {
     const data = await req.json();
 
     // lock event
-    /* validate event with your status of backend
+    /* validate event with your status of backend. if it's valid, you should return the success status to the hosting server.
     {
         "paymentId": "{payment_id}",
         "itemIdentifiers": [
@@ -17,7 +17,7 @@ export async function POST(req: NextRequest) {
     */
 
     // unlock event
-    /* validate event with your status of backend
+    /* handle this event with your status of backend. if payment hosting isn't get success, this event will be called
     {
         "paymentId": "{payment_id}",
         "itemIdentifiers": [
@@ -29,7 +29,7 @@ export async function POST(req: NextRequest) {
     */
 
     // confirmed event
-    /* validate event with your status of backend
+    /* validate event with your status of backend and update your status. You can make extra API to be called from frontend to check the confirmed status
     {
         "paymentId": "{payment_id}",
         "status": "CONFIRMED"
