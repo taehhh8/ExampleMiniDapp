@@ -11,9 +11,9 @@ interface buyReq {
   testMode: boolean;
 }
 
-const confirmCallbackUrl = process.env.CALLBACK_URL as string;
-const lockUrl = process.env.CALLBACK_URL as string;
-const unlockUrl = process.env.CALLBACK_URL as string;
+const confirmUrl = (process.env.RPC_URL + "/api/store/callback") as string;
+const lockUrl = (process.env.RPC_URL + "/api/store/callback") as string;
+const unlockUrl = (process.env.RPC_URL + "/api/store/callback") as string;
 
 export async function POST(req: NextRequest) {
   try {
@@ -24,8 +24,8 @@ export async function POST(req: NextRequest) {
       {
         method: "POST",
         headers: {
-          "X-Client-Id": process.env.CLIENT_ID as string,
-          "X-Client-Secret": process.env.CLIENT_SECRET as string,
+          "X-Client-Id": process.env.DAPP_PORTAL_CLIENT_ID as string,
+          "X-Client-Secret": process.env.PAYMENT_SECRET as string,
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
@@ -33,7 +33,7 @@ export async function POST(req: NextRequest) {
           pgType: data.pgType,
           currencyCode: data.currencyCode,
           price: data.price,
-          confirmCallbackUrl: confirmCallbackUrl,
+          confirmCallbackUrl: confirmUrl,
           lockUrl: lockUrl,
           unlockUrl: unlockUrl,
           items: [
