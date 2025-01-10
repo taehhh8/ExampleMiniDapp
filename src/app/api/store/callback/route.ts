@@ -6,6 +6,7 @@ export async function POST(req: NextRequest) {
 
     // lock event
     /* validate event with your status of backend. if it's valid, you should return the success status to the hosting server.
+    if it's not valid, you should return the failed status to the hosting server and it triggers the unlock event
     {
         "paymentId": "{payment_id}",
         "itemIdentifiers": [
