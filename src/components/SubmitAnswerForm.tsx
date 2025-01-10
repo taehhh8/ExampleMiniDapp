@@ -8,6 +8,7 @@ import { useRouter } from "next/navigation.js";
 import { Group } from "@semaphore-protocol/group";
 import { generateProof } from "@semaphore-protocol/proof";
 import { useLiff } from "../context/LiffProvider.tsx";
+import liff from "@line/liff";
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3000";
 
@@ -94,8 +95,8 @@ export default function SubmitAnswerForm({
       alert("Please connect the wallet first!");
       return;
     }
-    if (!identity || !liffObject.isLoggedIn()) {
-      alert("You need to login with LINE if you want to join the group");
+    if (!identity || !liff.isInClient()) {
+      alert("You need to access with LINE if you want to join the group");
       return;
     }
     const idToken = liffObject.getAccessToken();
