@@ -131,6 +131,7 @@ export const Web3Provider: React.FC<{ children: React.ReactNode }> = ({
 
       if (
         provider &&
+        liffObject &&
         (provider.getWalletType() === WalletType.Liff ||
           provider.getWalletType() === WalletType.Web) &&
         liffObject.isLoggedIn()

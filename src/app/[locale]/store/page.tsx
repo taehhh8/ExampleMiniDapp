@@ -21,6 +21,7 @@ export default function Page() {
       {exampleItems.map((item) => (
         <ItemCard
           key={item.itemIdentifier}
+          itemIdentifier={item.itemIdentifier}
           imageUrl={item.imageUrl}
           name={item.name}
           price={item.price}

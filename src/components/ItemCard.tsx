@@ -2,7 +2,7 @@ import React from "react";
 import { useWeb3 } from "../context/Web3Provider";
 
 interface ItemCardProps {
-  key: string;
+  itemIdentifier: string;
   imageUrl: string;
   name: string;
   price: string;
@@ -14,16 +14,19 @@ export default function ItemCard(Props: ItemCardProps) {
   const { provider, account, pProvider } = useWeb3();
 
   const hostPayment = async () => {
+    console.log(provider, account, pProvider);
     if (!pProvider || !account || !provider) return;
 
-    const result = await fetch(`${process.env.API_URL}/api/store`, {
+    console.log(process.env.API_URL + "/api/store");
+
+    const result = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/store`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
         buyerAddress: account,
-        itemIdentifier: Props.key,
+        itemIdentifier: Props.itemIdentifier,
         name: Props.name,
         imageUrl: Props.imageUrl,
         pgType: "CRYPTO",

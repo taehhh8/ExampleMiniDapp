@@ -30,16 +30,18 @@ export const LiffProvider: React.FC<{ children: React.ReactNode }> = ({
   };
 
   useEffect(() => {
-    liff
-      .init({ liffId: process.env.NEXT_PUBLIC_LIFF_ID as string })
-      .then(() => {
-        console.log("liff initialization is done");
-        setLiffObject(liff);
-      })
-      .catch((error: any) => {
-        console.log(`liff initialization failed: ${error}`);
-        setLiffError(error.toString());
-      });
+    if (liff.isInClient()) {
+      liff
+        .init({ liffId: process.env.NEXT_PUBLIC_LIFF_ID as string })
+        .then(() => {
+          console.log("liff initialization is done");
+          setLiffObject(liff);
+        })
+        .catch((error: any) => {
+          console.log(`liff initialization failed: ${error}`);
+          setLiffError(error.toString());
+        });
+    }
     initDappPortalSDK();
   }, []);
 
