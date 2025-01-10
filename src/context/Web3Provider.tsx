@@ -8,7 +8,7 @@ declare global {
 }
 
 import React, { createContext, useContext, useEffect, useState } from "react";
-import { WalletType } from "@linenext/dapp-portal-sdk";
+import { WalletType, PaymentProvider } from "@linenext/dapp-portal-sdk";
 import { ethers } from "ethers";
 import { Web3Provider as w3 } from "@kaiachain/ethers-ext/v6";
 import { useLiff } from "./LiffProvider.tsx";
@@ -22,6 +22,7 @@ const SEMAPHORE_IDENTITY_KEY = "semaphoreIdentity";
 interface Web3ContextType {
   provider: w3 | null;
   // provider: ethers.BrowserProvider | null;
+  pProvider: PaymentProvider | null;
   account: string | null;
   identity: Identity | null;
   isConnected: boolean;
@@ -36,6 +37,7 @@ export const Web3Provider: React.FC<{ children: React.ReactNode }> = ({
 }) => {
   const [provider, setProvider] = useState<w3 | null>(null);
   // const [provider, setProvider] = useState<ethers.BrowserProvider | null>(null);
+  const [pProvider, setPProvider] = useState<PaymentProvider | null>(null);
   const [account, setAccount] = useState<string | null>(null);
   const [isConnected, setIsConnected] = useState<boolean>(false);
   const [identity, setIdentity] = useState<Identity | null>(null);
@@ -124,6 +126,8 @@ export const Web3Provider: React.FC<{ children: React.ReactNode }> = ({
       const provider = dappPortalSDK?.getWalletProvider();
       const web3Provider = new w3(provider);
       const accounts = await web3Provider.send("kaia_requestAccounts", []);
+      const pProvider = dappPortalSDK?.getPaymentProvider();
+      setPProvider(pProvider as PaymentProvider);
 
       if (
         provider &&
@@ -162,6 +166,7 @@ export const Web3Provider: React.FC<{ children: React.ReactNode }> = ({
     <Web3Context.Provider
       value={{
         provider,
+        pProvider,
         account,
         identity,
         isConnected,

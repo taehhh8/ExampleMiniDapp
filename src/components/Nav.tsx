@@ -42,6 +42,10 @@ export default function Nav() {
       title: messages.create,
       route: "/survey/create",
     },
+    {
+      title: messages.store,
+      route: "/store",
+    },
     // {
     //   title: messages.myPage,
     //   route: "/survey/manage",

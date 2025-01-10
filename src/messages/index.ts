@@ -124,32 +124,38 @@ export type NavMessages = {
   survey: string;
   create: string;
   myPage: string;
+  store: string;
 };
 
 export const navTranslations: Record<string, NavMessages> = {
   en: {
     survey: "Survey",
     create: "Create",
+    store: "Store",
     myPage: "My Page",
   },
   ko: {
     survey: "설문",
     create: "생성",
+    store: "상점",
     myPage: "마이 페이지",
   },
   ja: {
     survey: "アンケート",
     create: "作成",
+    store: "ストア",
     myPage: "マイページ",
   },
   "zh-TW": {
     survey: "調查",
     create: "創建",
+    store: "商店",
     myPage: "我的頁面",
   },
   th: {
     survey: "แบบสำรวจ",
     create: "สร้าง",
+    store: "ร้านค้า",
     myPage: "หน้าของฉัน",
   },
 };
