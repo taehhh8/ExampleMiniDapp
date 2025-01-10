@@ -9,6 +9,7 @@ import LineLoginBtn from "./buttons/LineLoginBtn";
 import { useParams } from "next/navigation";
 import { navTranslations, NavMessages } from "../messages";
 import liff from "@line/liff";
+import liffCore from "@line/liff/core";
 
 export interface MenuItem {
   title: string;
@@ -75,11 +76,11 @@ export default function Nav() {
         })}
       </div>
       <div className="flex justify-end lg:w-1/3 md:w-1/3 w-2/4 ml-5">
-        {/* {liffObject && liffObject.isLoggedIn() ? ( */}
-        <WalletBtn />
-        {/* ) : (
+        {!liff.isInClient() || (liffObject && liffObject.isLoggedIn()) ? (
+          <WalletBtn />
+        ) : (
           <LineLoginBtn />
-        )} */}
+        )}
       </div>
       <div className="flex flex-col justify-end ml-4 lg:hidden md:hidden">
         <div

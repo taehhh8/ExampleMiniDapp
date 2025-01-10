@@ -17,26 +17,34 @@ export default function ItemCard(Props: ItemCardProps) {
     console.log(provider, account, pProvider);
     if (!pProvider || !account || !provider) return;
 
-    const result = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/store`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        buyerAddress: account,
-        itemIdentifier: Props.itemIdentifier,
-        name: Props.name,
-        imageUrl: Props.imageUrl,
-        pgType: "CRYPTO",
-        currencyCode: "KAIA",
-        price: Props.price,
-        testMode: true,
-      }),
-    });
+    try {
+      const result = await fetch(
+        `${process.env.NEXT_PUBLIC_API_URL}/api/store`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            buyerAddress: account,
+            itemIdentifier: Props.itemIdentifier,
+            name: Props.name,
+            imageUrl: Props.imageUrl,
+            pgType: "CRYPTO",
+            currencyCode: "KAIA",
+            price: Props.price,
+            testMode: true,
+          }),
+        }
+      );
 
-    const data = await result.json();
-    console.log(data);
-    await pProvider.startPayment(data.pId);
+      const data = await result.json();
+      pProvider.startPayment(data.pId).then(() => {
+        alert("Payment is success");
+      });
+    } catch (error) {
+      alert("Payment is failed");
+    }
   };
   return (
     <div className="flex flex-col items-center bg-slate-400 rounded-2xl w-32 h-56">
