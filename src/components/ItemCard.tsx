@@ -16,7 +16,7 @@ export default function ItemCard(Props: ItemCardProps) {
   const hostPayment = async () => {
     if (!pProvider || !account || !provider) return;
 
-    const result = await fetch(`${process.env.RPC_URL}/api/store`, {
+    const result = await fetch(`${process.env.API_URL}/api/store`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -33,8 +33,9 @@ export default function ItemCard(Props: ItemCardProps) {
       }),
     });
 
-    const pId = await result.json();
-    await pProvider.startPayment(pId);
+    const data = await result.json();
+    console.log(data);
+    await pProvider.startPayment(data.pId);
   };
   return (
     <div className="flex flex-col items-center bg-slate-400 rounded-2xl w-32 h-56">
