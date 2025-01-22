@@ -36,13 +36,13 @@ export const LiffProvider: React.FC<{ children: React.ReactNode }> = ({
         .then(() => {
           console.log("liff initialization is done");
           setLiffObject(liff);
+          initDappPortalSDK();
         })
         .catch((error: any) => {
           console.log(`liff initialization failed: ${error}`);
           setLiffError(error.toString());
         });
     }
-    initDappPortalSDK();
   }, []);
 
   return (
