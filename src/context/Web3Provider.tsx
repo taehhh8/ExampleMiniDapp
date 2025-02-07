@@ -9,7 +9,6 @@ declare global {
 
 import React, { createContext, useContext, useEffect, useState } from "react";
 import { WalletType, PaymentProvider } from "@linenext/dapp-portal-sdk";
-import { ethers } from "ethers";
 import { Web3Provider as w3 } from "@kaiachain/ethers-ext/v6";
 import { useLiff } from "./LiffProvider.tsx";
 import { Identity } from "@semaphore-protocol/identity";
@@ -20,9 +19,8 @@ const WALLET_IS_CONNECTED_KEY = "isWalletConnected";
 const SEMAPHORE_IDENTITY_KEY = "semaphoreIdentity";
 
 interface Web3ContextType {
-  provider: w3 | null;
-  // provider: ethers.BrowserProvider | null;
-  pProvider: PaymentProvider | null;
+  provider: w3 | undefined;
+  pProvider: PaymentProvider | undefined;
   account: string | null;
   identity: Identity | null;
   isConnected: boolean;
@@ -35,22 +33,20 @@ const Web3Context = createContext<Web3ContextType | undefined>(undefined);
 export const Web3Provider: React.FC<{ children: React.ReactNode }> = ({
   children,
 }) => {
-  const [provider, setProvider] = useState<w3 | null>(null);
-  // const [provider, setProvider] = useState<ethers.BrowserProvider | null>(null);
-  const [pProvider, setPProvider] = useState<PaymentProvider | null>(null);
+  const [provider, setProvider] = useState<w3 | undefined>(undefined);
+  const [pProvider, setPProvider] = useState<PaymentProvider | undefined>(
+    undefined
+  );
   const [account, setAccount] = useState<string | null>(null);
   const [isConnected, setIsConnected] = useState<boolean>(false);
   const [identity, setIdentity] = useState<Identity | null>(null);
-  const { liffObject, liffError, dappPortalSDK } = useLiff();
+  const { liffObject, dappPortalSDK, loading } = useLiff();
 
   // liff.login() make the page reload, so we need to load the state from the session storage
   useEffect(() => {
     const storedAccount = sessionStorage.getItem(WALLET_ACCOUNT_KEY);
     const storedIsConnected = sessionStorage.getItem(WALLET_IS_CONNECTED_KEY);
     const storedIdentity = sessionStorage.getItem(SEMAPHORE_IDENTITY_KEY);
-    if (window.klaytn) {
-      setProvider(new w3(window.klaytn));
-    }
     if (storedAccount) {
       setAccount(storedAccount);
     }
@@ -60,7 +56,13 @@ export const Web3Provider: React.FC<{ children: React.ReactNode }> = ({
     if (storedIdentity) {
       setIdentity(new Identity(storedIdentity));
     }
-  }, []);
+    if (dappPortalSDK) {
+      const pp = dappPortalSDK.getPaymentProvider();
+      const p = dappPortalSDK.getWalletProvider();
+      setPProvider(pp);
+      setProvider(new w3(p));
+    }
+  }, [loading]);
 
   useEffect(() => {
     if (identity) {
@@ -101,33 +103,10 @@ export const Web3Provider: React.FC<{ children: React.ReactNode }> = ({
 
   const connectWallet = async () => {
     try {
-      // if (!window.klaytn) {
-      //   alert("kaia wallet is not installed!");
-      //   return;
-      // }
-
-      // if (liffObject?.isLoggedIn()) {
-      //   const web3Provider = new w3(window.klaytn);
-      //   // const web3Provider = new ethers.BrowserProvider(window.klaytn);
-      //   const accounts = await web3Provider.send("eth_requestAccounts", []);
-      //   const identity = await createIdentity(
-      //     web3Provider,
-      //     accounts[0],
-      //     liffObject
-      //   );
-      //   setIdentity(identity);
-      //   setProvider(web3Provider);
-      //   setAccount(accounts[0]);
-      //   setIsConnected(true);
-      // } else {
-      //   alert("Please login with LINE first!");
-      // }
-
       const provider = dappPortalSDK?.getWalletProvider();
       const web3Provider = new w3(provider);
       const accounts = await web3Provider.send("kaia_requestAccounts", []);
       const pProvider = dappPortalSDK?.getPaymentProvider();
-      setPProvider(pProvider as PaymentProvider);
 
       if (
         provider &&
@@ -144,6 +123,7 @@ export const Web3Provider: React.FC<{ children: React.ReactNode }> = ({
         setIdentity(identity);
       }
 
+      setPProvider(pProvider);
       setProvider(web3Provider);
       setAccount(accounts[0]);
       setIsConnected(true);
@@ -154,7 +134,8 @@ export const Web3Provider: React.FC<{ children: React.ReactNode }> = ({
 
   const disconnectWallet = () => {
     if (confirm("Are you sure you want to disconnect?")) {
-      setProvider(null);
+      setPProvider(undefined);
+      setProvider(undefined);
       setAccount(null);
       setIsConnected(false);
       sessionStorage.removeItem(SEMAPHORE_IDENTITY_KEY);

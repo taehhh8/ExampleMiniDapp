@@ -8,6 +8,7 @@ interface LiffContextType {
   liffObject: any;
   liffError: any;
   dappPortalSDK: DappPortalSDK | null;
+  loading: boolean;
 }
 
 const LiffContext = createContext<LiffContextType | undefined>(undefined);
@@ -20,6 +21,7 @@ export const LiffProvider: React.FC<{ children: React.ReactNode }> = ({
   const [dappPortalSDK, setDappPortalSDK] = useState<DappPortalSDK | null>(
     null
   );
+  const [loading, setLoading] = useState(true);
 
   const initDappPortalSDK = async () => {
     const sdk = await DappPortalSDK.init({
@@ -36,17 +38,22 @@ export const LiffProvider: React.FC<{ children: React.ReactNode }> = ({
         .then(() => {
           console.log("liff initialization is done");
           setLiffObject(liff);
-          initDappPortalSDK();
         })
         .catch((error: any) => {
           console.log(`liff initialization failed: ${error}`);
           setLiffError(error.toString());
         });
     }
+    initDappPortalSDK().then(() => {
+      console.log("miniDappSDK initialization is done");
+      setLoading(false);
+    });
   }, []);
 
   return (
-    <LiffContext.Provider value={{ liffObject, liffError, dappPortalSDK }}>
+    <LiffContext.Provider
+      value={{ liffObject, liffError, dappPortalSDK, loading }}
+    >
       {children}
     </LiffContext.Provider>
   );
