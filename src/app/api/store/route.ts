@@ -18,7 +18,6 @@ const unlockUrl = (process.env.API_URL + "/api/store/callback") as string;
 export async function POST(req: NextRequest) {
   try {
     const data: buyReq = await req.json();
-
     const result = await fetch(
       "https://payment.dappportal.io/api/payment-v1/payment/create",
       {
@@ -33,9 +32,9 @@ export async function POST(req: NextRequest) {
           pgType: data.pgType,
           currencyCode: data.currencyCode,
           price: data.price,
-          confirmCallbackUrl: confirmUrl,
-          lockUrl: lockUrl,
-          unlockUrl: unlockUrl,
+          paymentStatusChangeCallbackUrl: confirmUrl,
+          // lockUrl: lockUrl,
+          // unlockUrl: unlockUrl,
           items: [
             {
               itemIdentifier: data.itemIdentifier,
@@ -49,7 +48,8 @@ export async function POST(req: NextRequest) {
         }),
       }
     );
-    const pId = (await result.json()).id;
+    const r = await result.json();
+    const pId = r.id;
     return NextResponse.json({ pId }, { status: 200 });
   } catch (error) {
     console.error(error);
