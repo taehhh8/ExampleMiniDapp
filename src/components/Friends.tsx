@@ -6,7 +6,7 @@ import { inviteMessages } from "../messages";
 
 export default function Friends() {
   const params = useParams();
-  const { liffObject, loading, inviteFriends } = useLiff();
+  const { loading, inviteFriends } = useLiff();
 
   const locale = params.locale as keyof typeof inviteMessages;
   const messages = inviteMessages[locale] || inviteMessages.en;
