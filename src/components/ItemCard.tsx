@@ -22,7 +22,6 @@ export default function ItemCard(Props: ItemCardProps) {
     }
 
     const decimalPlaces = currencyInfo.digits;
-    const factor = 10 ** decimalPlaces;
     return currency(amount, { precision: decimalPlaces })
       .divide(10 ** decimalPlaces)
       .format()
