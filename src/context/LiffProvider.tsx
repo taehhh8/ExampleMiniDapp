@@ -1,13 +1,17 @@
 "use client";
 
 import liff from "@line/liff";
+import { type LiffMessage } from "@liff/send-messages/lib/type";
 import DappPortalSDK from "@linenext/dapp-portal-sdk";
 import React, { createContext, useContext, useEffect, useState } from "react";
+import { useParams } from "next/navigation";
+import { inviteMessages, InviteMessage } from "../messages";
 
 interface LiffContextType {
   liffObject: any;
   liffError: any;
   dappPortalSDK: DappPortalSDK | null;
+  inviteFriends: () => void;
   loading: boolean;
 }
 
@@ -22,6 +26,8 @@ export const LiffProvider: React.FC<{ children: React.ReactNode }> = ({
     null
   );
   const [loading, setLoading] = useState(true);
+  const params = useParams();
+  const locale = params.locale as keyof typeof inviteMessages;
 
   const initDappPortalSDK = async () => {
     const sdk = await DappPortalSDK.init({
@@ -29,6 +35,72 @@ export const LiffProvider: React.FC<{ children: React.ReactNode }> = ({
       chainId: process.env.NEXT_PUBLIC_CHAIN_ID,
     });
     setDappPortalSDK(sdk);
+  };
+
+  const getFlexMessage = (locale: string): LiffMessage => {
+    const message = inviteMessages[locale] || inviteMessages["en"];
+    return {
+      type: "flex",
+      altText: message.altText,
+      contents: {
+        type: "bubble",
+        hero: {
+          type: "image",
+          url: "https://cyqrsixkgnoiflgq.public.blob.vercel-storage.com/IMG_9055-GNxneDxjn0bwyou8SDKDhRHJD0xoJg.png",
+          size: "full",
+          aspectRatio: "20:13",
+          aspectMode: "cover",
+        },
+        body: {
+          type: "box",
+          layout: "vertical",
+          contents: [
+            {
+              type: "text",
+              text: message.contentsText1,
+              weight: "bold",
+              size: "xl",
+            },
+            {
+              type: "text",
+              text: message.contentsText2,
+              wrap: true,
+            },
+          ],
+        },
+        footer: {
+          type: "box",
+          layout: "vertical",
+          spacing: "sm",
+          contents: [
+            {
+              type: "button",
+              style: "primary",
+              action: {
+                type: "uri",
+                label: message.footerLabel,
+                uri: "https://lin.ee/XXXXXXX",
+              },
+            },
+          ],
+        },
+      },
+    };
+  };
+
+  const inviteFriends = async () => {
+    if (liff && !liff.isLoggedIn()) {
+      liff.login();
+      return;
+    }
+
+    const msg = getFlexMessage(locale);
+
+    if (liff.isApiAvailable("shareTargetPicker")) {
+      await liff.shareTargetPicker([msg]);
+    } else {
+      alert("ShareTargetPicker is not available");
+    }
   };
 
   useEffect(() => {
@@ -59,7 +131,7 @@ export const LiffProvider: React.FC<{ children: React.ReactNode }> = ({
 
   return (
     <LiffContext.Provider
-      value={{ liffObject, liffError, dappPortalSDK, loading }}
+      value={{ liffObject, liffError, dappPortalSDK, inviteFriends, loading }}
     >
       {children}
     </LiffContext.Provider>

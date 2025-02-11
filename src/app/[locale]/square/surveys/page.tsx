@@ -2,6 +2,7 @@ import React from "react";
 import SurveyCard from "../../../../components/SurveyCard";
 import { getAllSurveyV1s } from "../../../../hooks/backend/survey";
 import { surveysTranslations } from "../../../../messages";
+import Friends from "../../../../components/Friends";
 
 export const metadata = {
   title: "Surveys",
@@ -25,6 +26,7 @@ export default async function SurveysPage({
 
   return (
     <div className="flex flex-col mt-5">
+      <Friends />
       {hotTopics.length !== 0 ? (
         <div>
           <h1 className="flex flex-col items-center text-3xl font-bold font-sans text-red-400 mx-5">

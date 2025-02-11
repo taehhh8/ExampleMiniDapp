@@ -159,3 +159,55 @@ export const navTranslations: Record<string, NavMessages> = {
     myPage: "หน้าของฉัน",
   },
 };
+
+export type InviteMessage = {
+  altText: string;
+  contentsText1: string;
+  contentsText2: string;
+  footerLabel: string;
+  invite: string;
+  inviteMessage: string;
+};
+
+export const inviteMessages: Record<string, InviteMessage> = {
+  ko: {
+    altText: "친구 추가 초대 메시지",
+    contentsText1: "공식 계정을 추가하세요!",
+    contentsText2: "친구 추가하고 다양한 혜택을 받아보세요!",
+    footerLabel: "친구 추가하기",
+    invite: "초대",
+    inviteMessage: "친구를 초대하고 보상을 받아보세요!",
+  },
+  en: {
+    altText: "Friend Invitation Message",
+    contentsText1: "Add our official account!",
+    contentsText2: "Add friends and enjoy exclusive benefits!",
+    footerLabel: "Add Friend",
+    invite: "Invite",
+    inviteMessage: "Invite friends and get rewards!",
+  },
+  ja: {
+    altText: "友だち追加の招待メッセージ",
+    contentsText1: "公式アカウントを追加しよう！",
+    contentsText2: "友だち追加して特別な特典をゲット！",
+    footerLabel: "友だち追加",
+    invite: "招待",
+    inviteMessage: "友だちを招待して報酬をゲット！",
+  },
+  "zh-TW": {
+    altText: "好友邀請訊息",
+    contentsText1: "立即加入官方帳號！",
+    contentsText2: "加好友，獲取專屬優惠！",
+    footerLabel: "加入好友",
+    invite: "邀請",
+    inviteMessage: "邀請好友，獲取獎勵！",
+  },
+  th: {
+    altText: "ข้อความเชิญชวนเพื่อน",
+    contentsText1: "เพิ่มบัญชีทางการเลย!",
+    contentsText2: "เพิ่มเพื่อนเพื่อรับสิทธิพิเศษ!",
+    footerLabel: "เพิ่มเพื่อน",
+    invite: "เชิญชวน",
+    inviteMessage: "เชิญเพื่อนและรับรางวัล!",
+  },
+};
