@@ -96,11 +96,11 @@ export const LiffProvider: React.FC<{ children: React.ReactNode }> = ({
 
     const msg = getFlexMessage(locale);
 
-    if (liff.isApiAvailable("shareTargetPicker")) {
-      await liff.shareTargetPicker([msg]);
-    } else {
-      alert("ShareTargetPicker is not available");
-    }
+    // if (liff.isApiAvailable("shareTargetPicker")) {
+    await liff.shareTargetPicker([msg]);
+    // } else {
+    //   alert("ShareTargetPicker is not available");
+    // }
   };
 
   useEffect(() => {
