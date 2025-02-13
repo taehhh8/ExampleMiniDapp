@@ -109,38 +109,34 @@ export const LiffProvider: React.FC<{ children: React.ReactNode }> = ({
     liff
       .init({
         liffId: process.env.NEXT_PUBLIC_LIFF_ID as string,
-        withLoginOnExternalBrowser: true,
       })
       .then(() => {
-        if (liff.isInClient()) {
-          console.log("liff initialization is done");
-          setLiffObject(liff);
-          setLoggedIn(liff.isLoggedIn());
-          initDappPortalSDK().then(() => {
-            console.log("miniDappSDK initialization is done");
-            setLoading(false);
-          });
-        } else {
-          liff
-            .init({
-              liffId: process.env.NEXT_PUBLIC_LIFF_ID as string,
-              withLoginOnExternalBrowser: true,
-            })
-            .then(() => {
-              console.log("liff initialization is done");
-              setLiffObject(liff);
-              setLoggedIn(liff.isLoggedIn());
-              initDappPortalSDK().then(() => {
-                console.log("miniDappSDK initialization is done");
-                setLoading(false);
-              });
-            });
-        }
+        console.log("liff initialization is done");
       })
       .catch((error: any) => {
         console.log(`liff initialization failed: ${error}`);
         setLiffError(error.toString());
       });
+
+    if (liff.isInClient()) {
+      liff
+        .init({
+          liffId: process.env.NEXT_PUBLIC_LIFF_ID as string,
+          withLoginOnExternalBrowser: true,
+        })
+        .then(() => {
+          console.log("liff initialization is done");
+        });
+    }
+
+    if (liff.isLoggedIn()) {
+      setLiffObject(liff);
+      setLoggedIn(liff.isLoggedIn());
+      initDappPortalSDK().then(() => {
+        console.log("miniDappSDK initialization is done");
+        setLoading(false);
+      });
+    }
   }, [loggedIn]);
 
   return (
