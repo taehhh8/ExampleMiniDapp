@@ -9,6 +9,7 @@ export default function LineLoginBtn() {
       return;
     }
     const login = await liffObject.login();
+    console.log(liffObject.getAccessToken());
     if (!login) {
       return;
     }
