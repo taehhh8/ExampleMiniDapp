@@ -18,7 +18,7 @@ export interface MenuItem {
 export default function Nav() {
   const params = useParams();
   const [isNavOpen, setIsNavOpen] = useState(false);
-  const { liffObject } = useLiff();
+  const { liffObject, loading } = useLiff();
 
   const locale = params.locale as keyof typeof navTranslations;
   const messages: NavMessages = navTranslations[locale] || navTranslations.en;
@@ -37,6 +37,10 @@ export default function Nav() {
       route: "/store",
     },
   ];
+
+  if (loading) {
+    return <div></div>;
+  }
 
   return (
     <>
