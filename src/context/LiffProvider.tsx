@@ -107,6 +107,7 @@ export const LiffProvider: React.FC<{ children: React.ReactNode }> = ({
     liff
       .init({
         liffId: process.env.NEXT_PUBLIC_LIFF_ID as string,
+        withLoginOnExternalBrowser: true,
       })
       .then(() => {
         console.log("liff initialization is done");
@@ -129,6 +130,12 @@ export const LiffProvider: React.FC<{ children: React.ReactNode }> = ({
             setLoading(false);
           });
         });
+    } else {
+      setLiffObject(liff);
+      initDappPortalSDK().then(() => {
+        console.log("miniDappSDK initialization is done");
+        setLoading(false);
+      });
     }
   }, []);
 
