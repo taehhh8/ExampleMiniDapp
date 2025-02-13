@@ -123,15 +123,12 @@ export const LiffProvider: React.FC<{ children: React.ReactNode }> = ({
         })
         .then(() => {
           console.log("liff initialization is done");
+          setLiffObject(liff);
+          initDappPortalSDK().then(() => {
+            console.log("miniDappSDK initialization is done");
+            setLoading(false);
+          });
         });
-    }
-
-    if (liff.isLoggedIn()) {
-      setLiffObject(liff);
-      initDappPortalSDK().then(() => {
-        console.log("miniDappSDK initialization is done");
-        setLoading(false);
-      });
     }
   }, []);
 
