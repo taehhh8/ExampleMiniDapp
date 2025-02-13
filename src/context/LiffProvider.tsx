@@ -79,7 +79,7 @@ export const LiffProvider: React.FC<{ children: React.ReactNode }> = ({
               action: {
                 type: "uri",
                 label: message.footerLabel,
-                uri: "https://lin.ee/XXXXXXX",
+                uri: "https://liff.line.me/2006655154-K808DVbx",
               },
             },
           ],
@@ -96,37 +96,31 @@ export const LiffProvider: React.FC<{ children: React.ReactNode }> = ({
 
     const msg = getFlexMessage(locale);
 
-    // if (liff.isApiAvailable("shareTargetPicker")) {
-    await liff.shareTargetPicker([msg]);
-    // } else {
-    //   alert("ShareTargetPicker is not available");
-    // }
+    if (liff.isApiAvailable("shareTargetPicker")) {
+      await liff.shareTargetPicker([msg]);
+    } else {
+      alert("ShareTargetPicker is not available");
+    }
   };
 
   useEffect(() => {
-    // on LINE messenger
-    if (liff.isInClient()) {
-      liff
-        .init({ liffId: process.env.NEXT_PUBLIC_LIFF_ID as string })
-        .then(() => {
-          console.log("liff initialization is done");
-          setLiffObject(liff);
-          initDappPortalSDK().then(() => {
-            console.log("miniDappSDK initialization is done");
-            setLoading(false);
-          });
-        })
-        .catch((error: any) => {
-          console.log(`liff initialization failed: ${error}`);
-          setLiffError(error.toString());
+    liff
+      .init({
+        liffId: process.env.NEXT_PUBLIC_LIFF_ID as string,
+        withLoginOnExternalBrowser: true,
+      })
+      .then(() => {
+        console.log("liff initialization is done");
+        setLiffObject(liff);
+        initDappPortalSDK().then(() => {
+          console.log("miniDappSDK initialization is done");
+          setLoading(false);
         });
-      // on browser
-    } else {
-      initDappPortalSDK().then(() => {
-        console.log("miniDappSDK initialization is done");
-        setLoading(false);
+      })
+      .catch((error: any) => {
+        console.log(`liff initialization failed: ${error}`);
+        setLiffError(error.toString());
       });
-    }
   }, []);
 
   return (
