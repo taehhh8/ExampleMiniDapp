@@ -5,8 +5,7 @@ import { type LiffMessage } from "@liff/send-messages/lib/type";
 import DappPortalSDK from "@linenext/dapp-portal-sdk";
 import React, { createContext, useContext, useEffect, useState } from "react";
 import { useParams } from "next/navigation";
-import { inviteMessages, InviteMessage } from "../messages";
-import { set } from "react-hook-form";
+import { inviteMessages } from "../messages";
 
 interface LiffContextType {
   liffObject: any;
@@ -27,7 +26,6 @@ export const LiffProvider: React.FC<{ children: React.ReactNode }> = ({
     null
   );
   const [loading, setLoading] = useState(true);
-  const [loggedIn, setLoggedIn] = useState(false);
   const params = useParams();
   const locale = params.locale as keyof typeof inviteMessages;
 
@@ -130,13 +128,12 @@ export const LiffProvider: React.FC<{ children: React.ReactNode }> = ({
 
     if (liff.isLoggedIn()) {
       setLiffObject(liff);
-      setLoggedIn(liff.isLoggedIn());
       initDappPortalSDK().then(() => {
         console.log("miniDappSDK initialization is done");
         setLoading(false);
       });
     }
-  }, [loggedIn]);
+  }, []);
 
   return (
     <LiffContext.Provider
