@@ -61,9 +61,7 @@ export default function Nav() {
         })}
       </div>
       <div className="flex justify-end lg:w-1/3 md:w-1/3 w-2/4 ml-5">
-        {!liffObject ||
-        !liffObject.isInClient() ||
-        (liffObject && liffObject.isLoggedIn()) ? (
+        {!liffObject.isInClient() || (liffObject && liffObject.isLoggedIn()) ? (
           <WalletBtn />
         ) : (
           <LineLoginBtn />
