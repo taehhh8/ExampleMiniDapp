@@ -106,7 +106,6 @@ export const LiffProvider: React.FC<{ children: React.ReactNode }> = ({
   };
 
   useEffect(() => {
-    console.log("liff initialization", process.env.NEXT_PUBLIC_LIFF_ID);
     liff
       .init({
         liffId: process.env.NEXT_PUBLIC_LIFF_ID as string,
@@ -119,7 +118,7 @@ export const LiffProvider: React.FC<{ children: React.ReactNode }> = ({
         setLiffError(error.toString());
       });
 
-    if (liff.isInClient()) {
+    if (!liff.isInClient()) {
       liff
         .init({
           liffId: process.env.NEXT_PUBLIC_LIFF_ID as string,
