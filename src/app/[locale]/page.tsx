@@ -21,10 +21,6 @@ export default function Page() {
   };
 
   useEffect(() => {
-    if (loading) {
-      return;
-    }
-
     // invited by friends
     if (params.encodedUID) {
       if (!liffObject || !liffObject.isLoggedIn()) {
@@ -40,7 +36,7 @@ export default function Page() {
       );
     }
     router.push("/square/surveys");
-  }, []);
+  }, [loading]);
 
   return <div className="flex flex-col gap-5"></div>;
 }
