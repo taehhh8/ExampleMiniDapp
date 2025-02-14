@@ -105,10 +105,7 @@ export const Web3Provider: React.FC<{ children: React.ReactNode }> = ({
     try {
       const provider = dappPortalSDK?.getWalletProvider();
       const web3Provider = new w3(provider);
-      // const accounts = await web3Provider.send("kaia_requestAccounts", []);
-      const accounts = (await provider?.request({
-        method: "kaia_requestAccounts",
-      })) as any[];
+      const accounts = await web3Provider.send("kaia_requestAccounts", []);
       const pProvider = dappPortalSDK?.getPaymentProvider();
 
       if (

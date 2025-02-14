@@ -131,7 +131,7 @@ export const getGroupId = async (surveyAddress: string) => {
   return groupId.toString();
 };
 
-const isValidToken = async (idToken: string) => {
+export const isValidToken = async (idToken: string) => {
   const valid = await fetch(process.env.VALIDATE_ID_TOKEN_SERVER as string, {
     method: "GET",
     headers: {

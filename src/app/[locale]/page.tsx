@@ -2,10 +2,43 @@
 
 import React, { useEffect } from "react";
 import { useRouter } from "next/navigation";
+import { useParams } from "next/navigation";
+import { useLiff } from "../../context/LiffProvider";
 
 export default function Page() {
+  const { liffObject, loading } = useLiff();
+  const params = useParams();
   const router = useRouter();
+
+  const friends = async (encodedUID: string, idToken: string) => {
+    return fetch("/api/invite/friends", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ encodedUID, idToken }),
+    }).then((res) => res.json());
+  };
+
   useEffect(() => {
+    if (loading) {
+      return;
+    }
+
+    // invited by friends
+    if (params.encodedUID) {
+      if (!liffObject || !liffObject.isLoggedIn()) {
+        return;
+      }
+      friends(params.encodedUID as string, liffObject.getIDToken()).then(
+        (res) => {
+          console.log(res);
+          if (res.error) {
+            console.error(res.error);
+          }
+        }
+      );
+    }
     router.push("/square/surveys");
   }, []);
 
