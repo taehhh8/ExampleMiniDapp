@@ -11,7 +11,7 @@ export default function Page() {
   const router = useRouter();
 
   const friends = async (encodedUID: string, idToken: string) => {
-    return fetch("/api/invite/friends", {
+    return fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/invite/friends`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

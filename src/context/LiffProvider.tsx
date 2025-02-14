@@ -100,7 +100,7 @@ export const LiffProvider: React.FC<{ children: React.ReactNode }> = ({
     let encodedUID;
     try {
       const result = await fetch(
-        `${process.env.NEXT_PUBLIC_API_URL}/api/encode`,
+        `${process.env.NEXT_PUBLIC_API_URL}/api/invite/encode`,
         {
           method: "POST",
           headers: {
