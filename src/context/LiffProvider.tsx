@@ -111,6 +111,7 @@ export const LiffProvider: React.FC<{ children: React.ReactNode }> = ({
           }),
         }
       ).then((res) => res.json());
+      alert(JSON.stringify(result));
       encodedUID = result.encodedUID;
     } catch (error) {
       alert("Error when encoding user ID");
