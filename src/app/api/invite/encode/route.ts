@@ -7,15 +7,18 @@ interface InviteBody {
 }
 
 export async function POST(req: NextRequest) {
+  const body: InviteBody = await req.json();
+  let profile, encodedUID;
   try {
-    const body: InviteBody = await req.json();
-    const profile = await isValidToken(body.idToken);
-    const encodedUID = jwt.sign(
-      profile.userId,
-      process.env.INVITE_SECRET as string
-    ); // won't be expired
-    return NextResponse.json({ encodedUID }, { status: 200 });
+    profile = await isValidToken(body.idToken);
   } catch (error) {
-    return NextResponse.json({ error: JSON.stringify(error) }, { status: 400 });
+    return NextResponse.json({ error }, { status: 400 });
   }
+
+  try {
+    encodedUID = jwt.sign(profile.userId, process.env.INVITE_SECRET as string); // won't be expired
+  } catch (error) {
+    return NextResponse.json({ error }, { status: 400 });
+  }
+  return NextResponse.json({ encodedUID }, { status: 200 });
 }
