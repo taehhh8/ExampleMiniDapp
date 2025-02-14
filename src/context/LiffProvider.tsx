@@ -37,7 +37,7 @@ export const LiffProvider: React.FC<{ children: React.ReactNode }> = ({
     setDappPortalSDK(sdk);
   };
 
-  const getFlexMessage = (locale: string): LiffMessage => {
+  const getFlexMessage = (locale: string, encodedUID: string): LiffMessage => {
     const message = inviteMessages[locale] || inviteMessages["en"];
     return {
       type: "flex",
@@ -57,7 +57,8 @@ export const LiffProvider: React.FC<{ children: React.ReactNode }> = ({
           contents: [
             {
               type: "text",
-              text: message.contentsText1,
+              // text: message.contentsText1,
+              text: encodedUID,
               weight: "bold",
               size: "xl",
             },
@@ -79,7 +80,9 @@ export const LiffProvider: React.FC<{ children: React.ReactNode }> = ({
               action: {
                 type: "uri",
                 label: message.footerLabel,
-                uri: "https://liff.line.me/2006655154-K808DVbx",
+                uri:
+                  "https://liff.line.me/2006655154-K808DVbx?encodedUID=" +
+                  encodedUID,
               },
             },
           ],
@@ -94,7 +97,26 @@ export const LiffProvider: React.FC<{ children: React.ReactNode }> = ({
       return;
     }
 
-    const msg = getFlexMessage(locale);
+    let encodedUID;
+    try {
+      const result = await fetch(
+        `${process.env.NEXT_PUBLIC_API_URL}/api/encode`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            idToken: liff.getIDToken(),
+          }),
+        }
+      ).then((res) => res.json());
+      encodedUID = result.encodedUID;
+    } catch (error) {
+      alert("Error when encoding user ID");
+    }
+
+    const msg = getFlexMessage(locale, encodedUID);
 
     if (liff.isApiAvailable("shareTargetPicker")) {
       await liff.shareTargetPicker([msg]);
