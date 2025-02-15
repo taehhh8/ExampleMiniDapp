@@ -11,22 +11,25 @@ export default function Page() {
   const router = useRouter();
 
   const friends = async (encodedUID: string, idToken: string) => {
-    return fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/invite/friends`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ encodedUID, idToken }),
-    }).then((res) => res.json());
+    return await fetch(
+      `${process.env.NEXT_PUBLIC_API_URL}/api/invite/friends`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ encodedUID, idToken }),
+      }
+    ).then((res) => res.json());
   };
 
   useEffect(() => {
+    alert("You are invited by friends" + params.encodedUID);
     // invited by friends
     if (params.encodedUID) {
       if (!liffObject || !liffObject.isLoggedIn()) {
         return;
       }
-      alert("You are invited by friends" + params.encodedUID);
       friends(params.encodedUID as string, liffObject.getIDToken()).then(
         (res) => {
           if (res.error) {
