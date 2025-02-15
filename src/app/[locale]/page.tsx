@@ -26,9 +26,9 @@ export default function Page() {
       if (!liffObject || !liffObject.isLoggedIn()) {
         return;
       }
+      alert("You are invited by friends" + params.encodedUID);
       friends(params.encodedUID as string, liffObject.getIDToken()).then(
         (res) => {
-          console.log(res);
           if (res.error) {
             console.error(res.error);
           }
