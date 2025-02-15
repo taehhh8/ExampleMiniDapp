@@ -25,7 +25,8 @@ export default function Page() {
   };
 
   useEffect(() => {
-    alert(JSON.stringify(encodedUID));
+    alert(JSON.stringify(searchParams));
+    alert(window.location.href);
     alert("You are invited by friends" + encodedUID);
     // invited by friends
     if (encodedUID) {
