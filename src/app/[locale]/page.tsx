@@ -2,13 +2,14 @@
 
 import React, { useEffect } from "react";
 import { useRouter } from "next/navigation";
-import { useParams } from "next/navigation";
+import { useSearchParams } from "next/navigation";
 import { useLiff } from "../../context/LiffProvider";
 
 export default function Page() {
   const { liffObject, loading } = useLiff();
-  const params = useParams();
+  const searchParams = useSearchParams();
   const router = useRouter();
+  const encodedUID = searchParams.get("encodedUID");
 
   const friends = async (encodedUID: string, idToken: string) => {
     return await fetch(
@@ -24,20 +25,18 @@ export default function Page() {
   };
 
   useEffect(() => {
-    alert(JSON.stringify(params));
-    alert("You are invited by friends" + params.encodedUID);
+    alert(JSON.stringify(encodedUID));
+    alert("You are invited by friends" + encodedUID);
     // invited by friends
-    if (params.encodedUID) {
+    if (encodedUID) {
       if (!liffObject || !liffObject.isLoggedIn()) {
         return;
       }
-      friends(params.encodedUID as string, liffObject.getIDToken()).then(
-        (res) => {
-          if (res.error) {
-            console.error(res.error);
-          }
+      friends(encodedUID as string, liffObject.getIDToken()).then((res) => {
+        if (res.error) {
+          console.error(res.error);
         }
-      );
+      });
     }
     router.push("/square/surveys");
   }, [loading]);
