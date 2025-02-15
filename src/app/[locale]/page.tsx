@@ -25,9 +25,11 @@ export default function Page() {
   };
 
   useEffect(() => {
-    alert(JSON.stringify(searchParams));
-    alert(window.location.href);
-    alert("You are invited by friends" + encodedUID);
+    if (loading) {
+      return;
+    }
+    alert(liffObject.state);
+
     // invited by friends
     if (encodedUID) {
       if (!liffObject || !liffObject.isLoggedIn()) {
