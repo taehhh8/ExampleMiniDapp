@@ -107,7 +107,7 @@ export const LiffProvider: React.FC<{ children: React.ReactNode }> = ({
             "Content-Type": "application/json",
           },
           body: JSON.stringify({
-            idToken: liff.getIDToken(),
+            idToken: liff.getAccessToken(),
           }),
         }
       ).then((res) => res.json());
