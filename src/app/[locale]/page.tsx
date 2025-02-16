@@ -28,7 +28,7 @@ export default function Page() {
     if (loading) {
       return;
     }
-    alert(liffObject.state);
+    alert(window.location.href);
 
     // invited by friends
     if (encodedUID) {
