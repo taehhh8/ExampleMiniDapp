@@ -23,7 +23,6 @@ export default async function SurveysPage({
     .slice(0, 10);
 
   const endingSoon = data.filter((survey) => survey.daysleft < 2);
-  alert(window.location.href);
 
   return (
     <div className="flex flex-col mt-5">
