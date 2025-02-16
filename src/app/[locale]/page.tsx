@@ -29,6 +29,7 @@ export default function Page() {
       return;
     }
     alert(window.location.href);
+    alert(JSON.stringify(searchParams));
 
     // invited by friends
     if (encodedUID) {
