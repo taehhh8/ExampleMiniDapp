@@ -126,12 +126,14 @@ export const LiffProvider: React.FC<{ children: React.ReactNode }> = ({
   };
 
   useEffect(() => {
+    alert(window.location.href);
     liff
       .init({
         liffId: process.env.NEXT_PUBLIC_LIFF_ID as string,
       })
       .then(() => {
         console.log("liff initialization is done");
+        alert(window.location.href);
 
         // invited by friends
         const encodedUID = params.encodedUID;
