@@ -3,7 +3,7 @@
 import React, { useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { useSearchParams } from "next/navigation";
-import { useLiff } from "../../context/LiffProvider";
+import { useLiff } from "../context/LiffProvider";
 
 export default function Page() {
   const { liffObject, loading } = useLiff();

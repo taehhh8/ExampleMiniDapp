@@ -3,12 +3,12 @@
 import { useForm, useFieldArray } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useWeb3 } from "../../../../context/Web3Provider.tsx";
-import { createSurvey } from "../../../../hooks/browser/factory.tsx";
+import { useWeb3 } from "../../../context/Web3Provider.tsx";
+import { createSurvey } from "../../../hooks/browser/factory.tsx";
 import {
   surveyCreateTranslations,
   SurveyCreateMessages,
-} from "../../../../messages";
+} from "../../../messages/index.ts";
 import { useParams } from "next/navigation";
 import { useRouter } from "next/navigation.js";
 

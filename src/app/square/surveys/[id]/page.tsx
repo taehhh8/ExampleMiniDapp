@@ -3,9 +3,9 @@ import {
   countAnswers,
   getSurvey,
   getSurveyQuestions,
-} from "../../../../../hooks/backend/survey.tsx";
-import SubmitAnswerForm from "../../../../../components/SubmitAnswerForm.tsx";
-import AnswerChart from "../../../../../components/AnswerChart.tsx";
+} from "../../../../hooks/backend/survey.tsx";
+import SubmitAnswerForm from "../../../../components/SubmitAnswerForm.tsx";
+import AnswerChart from "../../../../components/AnswerChart.tsx";
 
 export default async function Survey({
   params,
