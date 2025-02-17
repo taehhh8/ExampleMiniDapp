@@ -1,8 +1,8 @@
 import React from "react";
-import SurveyCard from "../../../../components/SurveyCard";
-import { getAllSurveyV1s } from "../../../../hooks/backend/survey";
-import { surveysTranslations } from "../../../../messages";
-import Friends from "../../../../components/Friends";
+import SurveyCard from "../../../components/SurveyCard";
+import { getAllSurveyV1s } from "../../../hooks/backend/survey";
+import { surveysTranslations } from "../../../messages";
+import Friends from "../../../components/Friends";
 
 export const metadata = {
   title: "Surveys",
