@@ -150,6 +150,7 @@ export const LiffProvider: React.FC<{ children: React.ReactNode }> = ({
   };
 
   useEffect(() => {
+    let encodedUID;
     liff
       .init({
         liffId: process.env.NEXT_PUBLIC_LIFF_ID as string,
@@ -159,16 +160,7 @@ export const LiffProvider: React.FC<{ children: React.ReactNode }> = ({
 
         // invited by friends
         if (window.location.search !== "") {
-          const encodedUID = parseEncodedUID(window.location.search);
-          alert(encodedUID);
-          if (encodedUID && liffObject && liffObject.isLoggedIn()) {
-            friends(
-              encodedUID as string,
-              liffObject.getAccessToken() as string
-            ).then((res) => {
-              alert(JSON.stringify(res));
-            });
-          }
+          encodedUID = parseEncodedUID(window.location.search);
         }
         setLiffObject(liff);
         initDappPortalSDK().then(() => {
@@ -180,6 +172,14 @@ export const LiffProvider: React.FC<{ children: React.ReactNode }> = ({
         console.log(`liff initialization failed: ${error}`);
         setLiffError(error.toString());
       });
+
+    if (encodedUID && liffObject && liffObject.isLoggedIn()) {
+      friends(encodedUID as string, liffObject.getAccessToken() as string).then(
+        (res) => {
+          alert(JSON.stringify(res));
+        }
+      );
+    }
   }, []);
 
   return (
