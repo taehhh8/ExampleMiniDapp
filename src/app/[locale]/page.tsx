@@ -31,11 +31,7 @@ export default function Page() {
       return;
     }
     if (encodedUID && liffObject && liffObject.isLoggedIn()) {
-      friends(encodedUID as string, liffObject.getAccessToken() as string).then(
-        (res) => {
-          alert(JSON.stringify(res));
-        }
-      );
+      friends(encodedUID as string, liffObject.getAccessToken() as string);
     }
     router.push("/square/surveys");
   }, [loading, encodedUID]);
