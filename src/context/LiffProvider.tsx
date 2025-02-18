@@ -26,8 +26,9 @@ export const LiffProvider: React.FC<{ children: React.ReactNode }> = ({
     null
   );
   const [loading, setLoading] = useState(true);
+  const searchParams = useSearchParams();
   const params = useParams();
-  alert(JSON.stringify(params));
+  alert(JSON.stringify(searchParams));
   const locale = params.locale as keyof typeof inviteMessages;
 
   const initDappPortalSDK = async () => {
