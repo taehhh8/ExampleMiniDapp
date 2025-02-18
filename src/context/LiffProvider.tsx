@@ -152,6 +152,8 @@ export const LiffProvider: React.FC<{ children: React.ReactNode }> = ({
 
         // invited by friends
 
+        alert(window.location.href);
+        alert(window.location.search);
         const searchParams = new URLSearchParams(window.location.search);
         alert(JSON.stringify(searchParams));
         const encodedUID = searchParams.get("encodedUID");
