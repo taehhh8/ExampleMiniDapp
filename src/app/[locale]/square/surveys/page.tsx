@@ -1,4 +1,4 @@
-import React from "react";
+import React, { use } from "react";
 import SurveyCard from "../../../../components/SurveyCard";
 import { getAllSurveyV1s } from "../../../../hooks/backend/survey";
 import { surveysTranslations } from "../../../../messages";

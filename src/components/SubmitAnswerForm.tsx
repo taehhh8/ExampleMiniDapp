@@ -57,7 +57,9 @@ export default function SubmitAnswerForm({
       return;
     }
     if (!identity) {
-      alert("You need to login with LINE if you want to submit the answer");
+      alert(
+        "You need to access via LINE Messenger if you want to submit the answer"
+      );
       return;
     }
     const form = e.target as HTMLFormElement;
