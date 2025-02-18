@@ -142,6 +142,13 @@ export const LiffProvider: React.FC<{ children: React.ReactNode }> = ({
     return;
   };
 
+  const parseEncodedUID = (paramsStr: string) => {
+    const paramsAll = paramsStr.split("?")[1];
+    const params = paramsAll.split("&");
+    const encodedUID = params.find((param) => param.includes("encodedUID"));
+    return encodedUID?.split("=")[1];
+  };
+
   useEffect(() => {
     liff
       .init({
@@ -151,22 +158,19 @@ export const LiffProvider: React.FC<{ children: React.ReactNode }> = ({
         console.log("liff initialization is done");
 
         // invited by friends
-
-        alert(window.location.href);
-        alert(window.location.search);
-        const searchParams = new URLSearchParams(window.location.search);
-        alert(JSON.stringify(searchParams.entries()));
-        const encodedUID = searchParams.get("encodedUID");
-        if (encodedUID) {
-          if (!liffObject || !liffObject.isLoggedIn()) {
-            return;
+        if (window.location.search !== "") {
+          const encodedUID = parseEncodedUID(window.location.search);
+          if (encodedUID) {
+            if (!liffObject || !liffObject.isLoggedIn()) {
+              return;
+            }
+            friends(
+              encodedUID as string,
+              liffObject.getAccessToken() as string
+            ).then((res) => {
+              alert(JSON.stringify(res));
+            });
           }
-          friends(
-            encodedUID as string,
-            liffObject.getAccessToken() as string
-          ).then((res) => {
-            alert(JSON.stringify(res));
-          });
         }
         setLiffObject(liff);
         initDappPortalSDK().then(() => {
