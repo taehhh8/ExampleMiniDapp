@@ -1,10 +1,10 @@
 import React from "react";
 import "./styles/globals.css";
-import Footer from "../components/Footer";
-import Header from "../components/Header";
-import { Web3Provider } from "../context/Web3Provider";
+import Footer from "../../components/Footer";
+import Header from "../../components/Header";
+import { Web3Provider } from "../../context/Web3Provider";
 import { Metadata } from "next";
-import { LiffProvider } from "../context/LiffProvider";
+import { LiffProvider } from "../../context/LiffProvider";
 
 export const metadata: Metadata = {
   title: {

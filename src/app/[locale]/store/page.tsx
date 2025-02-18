@@ -1,7 +1,7 @@
 "use client";
 
 import React from "react";
-import ItemCard from "../../components/ItemCard";
+import ItemCard from "../../../components/ItemCard";
 
 const exampleItems = [
   {
