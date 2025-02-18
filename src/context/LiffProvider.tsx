@@ -6,12 +6,14 @@ import DappPortalSDK from "@linenext/dapp-portal-sdk";
 import React, { createContext, useContext, useEffect, useState } from "react";
 import { useParams } from "next/navigation";
 import { inviteMessages } from "../messages";
+import { set } from "react-hook-form";
 
 interface LiffContextType {
   liffObject: any;
   liffError: any;
   dappPortalSDK: DappPortalSDK | null;
   inviteFriends: () => void;
+  encodedUID: string | null; // referer's encodedUID
   loading: boolean;
 }
 
@@ -25,6 +27,7 @@ export const LiffProvider: React.FC<{ children: React.ReactNode }> = ({
   const [dappPortalSDK, setDappPortalSDK] = useState<DappPortalSDK | null>(
     null
   );
+  const [encodedUID, setEncodedUID] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
   const params = useParams();
   const locale = params.locale as keyof typeof inviteMessages;
@@ -125,23 +128,6 @@ export const LiffProvider: React.FC<{ children: React.ReactNode }> = ({
     }
   };
 
-  const friends = async (encodedUID: string, idToken: string) => {
-    const result = await fetch(
-      `${process.env.NEXT_PUBLIC_API_URL}/api/invite/friends`,
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          encodedUID,
-          idToken,
-        }),
-      }
-    ).then((res) => res.json());
-    return;
-  };
-
   const parseEncodedUID = (paramsStr: string) => {
     const paramsAll = paramsStr.split("?")[1];
     const params = paramsAll.split("&");
@@ -161,6 +147,7 @@ export const LiffProvider: React.FC<{ children: React.ReactNode }> = ({
         // invited by friends
         if (window.location.search !== "") {
           encodedUID = parseEncodedUID(window.location.search);
+          setEncodedUID(encodedUID as string);
         }
         setLiffObject(liff);
         initDappPortalSDK().then(() => {
@@ -172,19 +159,18 @@ export const LiffProvider: React.FC<{ children: React.ReactNode }> = ({
         console.log(`liff initialization failed: ${error}`);
         setLiffError(error.toString());
       });
-
-    if (encodedUID && liffObject && liffObject.isLoggedIn()) {
-      friends(encodedUID as string, liffObject.getAccessToken() as string).then(
-        (res) => {
-          alert(JSON.stringify(res));
-        }
-      );
-    }
   }, []);
 
   return (
     <LiffContext.Provider
-      value={{ liffObject, liffError, dappPortalSDK, inviteFriends, loading }}
+      value={{
+        liffObject,
+        liffError,
+        dappPortalSDK,
+        encodedUID,
+        inviteFriends,
+        loading,
+      }}
     >
       {children}
     </LiffContext.Provider>
