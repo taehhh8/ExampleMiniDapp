@@ -21,7 +21,8 @@ export async function POST(req: NextRequest) {
      * The user is invited by friends, do something here for reward
      * e.g. mapping the uid with profile.userId to reward uid(inviter) when the profile.userId(invitee) accomplishes some tasks
      */
-    console.log(`User ${profile.userId} is invited by ${uid}`);
-    return NextResponse.json({ success: true }, { status: 200 });
+    const msg = `User ${profile.userId} is invited by ${uid}`;
+    console.log(msg);
+    return NextResponse.json({ success: msg }, { status: 200 });
   }
 }
