@@ -4,7 +4,7 @@ import liff from "@line/liff";
 import { type LiffMessage } from "@liff/send-messages/lib/type";
 import DappPortalSDK from "@linenext/dapp-portal-sdk";
 import React, { createContext, useContext, useEffect, useState } from "react";
-import { useParams, useSearchParams } from "next/navigation";
+import { useParams } from "next/navigation";
 import { inviteMessages } from "../messages";
 
 interface LiffContextType {
@@ -26,9 +26,7 @@ export const LiffProvider: React.FC<{ children: React.ReactNode }> = ({
     null
   );
   const [loading, setLoading] = useState(true);
-  const searchParams = useSearchParams();
   const params = useParams();
-  alert(JSON.stringify(searchParams));
   const locale = params.locale as keyof typeof inviteMessages;
 
   const initDappPortalSDK = async () => {
@@ -127,6 +125,23 @@ export const LiffProvider: React.FC<{ children: React.ReactNode }> = ({
     }
   };
 
+  const friends = async (encodedUID: string, idToken: string) => {
+    const result = await fetch(
+      `${process.env.NEXT_PUBLIC_API_URL}/api/invite/friends`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          encodedUID,
+          idToken,
+        }),
+      }
+    ).then((res) => res.json());
+    return;
+  };
+
   useEffect(() => {
     liff
       .init({
@@ -137,17 +152,19 @@ export const LiffProvider: React.FC<{ children: React.ReactNode }> = ({
 
         // invited by friends
 
-        alert(window.location.href);
-        // if (encodedUID) {
-        //   if (!liffObject || !liffObject.isLoggedIn()) {
-        //     return;
-        //   }
-        //   friends(encodedUID as string, liffObject.getIDToken()).then((res) => {
-        //     if (res.error) {
-        //       console.error(res.error);
-        //     }
-        //   });
-        // }
+        const searchParams = new URLSearchParams(window.location.href);
+        const encodedUID = searchParams.get("encodedUID");
+        if (encodedUID) {
+          if (!liffObject || !liffObject.isLoggedIn()) {
+            return;
+          }
+          friends(
+            encodedUID as string,
+            liffObject.getAccessToken() as string
+          ).then((res) => {
+            alert(JSON.stringify(res));
+          });
+        }
         setLiffObject(liff);
         initDappPortalSDK().then(() => {
           console.log("miniDappSDK initialization is done");
