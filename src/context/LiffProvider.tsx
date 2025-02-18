@@ -4,7 +4,7 @@ import liff from "@line/liff";
 import { type LiffMessage } from "@liff/send-messages/lib/type";
 import DappPortalSDK from "@linenext/dapp-portal-sdk";
 import React, { createContext, useContext, useEffect, useState } from "react";
-import { useParams } from "next/navigation";
+import { useParams, useSearchParams } from "next/navigation";
 import { inviteMessages } from "../messages";
 
 interface LiffContextType {
@@ -26,6 +26,7 @@ export const LiffProvider: React.FC<{ children: React.ReactNode }> = ({
     null
   );
   const [loading, setLoading] = useState(true);
+  const searchParams = useSearchParams();
   const params = useParams();
   const locale = params.locale as keyof typeof inviteMessages;
 
@@ -126,18 +127,16 @@ export const LiffProvider: React.FC<{ children: React.ReactNode }> = ({
   };
 
   useEffect(() => {
-    alert(window.location.href);
     liff
       .init({
         liffId: process.env.NEXT_PUBLIC_LIFF_ID as string,
       })
       .then(() => {
         console.log("liff initialization is done");
-        alert(window.location.href);
 
         // invited by friends
-        const encodedUID = params.encodedUID;
-        alert(JSON.stringify(params));
+
+        alert(JSON.stringify(searchParams));
         // if (encodedUID) {
         //   if (!liffObject || !liffObject.isLoggedIn()) {
         //     return;

@@ -9,19 +9,6 @@ export default function Page() {
   const { liffObject, loading } = useLiff();
   const router = useRouter();
 
-  const friends = async (encodedUID: string, idToken: string) => {
-    return await fetch(
-      `${process.env.NEXT_PUBLIC_API_URL}/api/invite/friends`,
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ encodedUID, idToken }),
-      }
-    ).then((res) => res.json());
-  };
-
   useEffect(() => {
     if (loading) {
       return;
