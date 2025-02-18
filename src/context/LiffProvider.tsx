@@ -26,8 +26,8 @@ export const LiffProvider: React.FC<{ children: React.ReactNode }> = ({
     null
   );
   const [loading, setLoading] = useState(true);
-  const searchParams = useSearchParams();
   const params = useParams();
+  alert(JSON.stringify(params));
   const locale = params.locale as keyof typeof inviteMessages;
 
   const initDappPortalSDK = async () => {
@@ -136,7 +136,7 @@ export const LiffProvider: React.FC<{ children: React.ReactNode }> = ({
 
         // invited by friends
 
-        alert(JSON.stringify(searchParams));
+        alert(window.location.href);
         // if (encodedUID) {
         //   if (!liffObject || !liffObject.isLoggedIn()) {
         //     return;
