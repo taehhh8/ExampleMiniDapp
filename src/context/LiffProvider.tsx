@@ -155,7 +155,7 @@ export const LiffProvider: React.FC<{ children: React.ReactNode }> = ({
         alert(window.location.href);
         alert(window.location.search);
         const searchParams = new URLSearchParams(window.location.search);
-        alert(JSON.stringify(searchParams));
+        alert(JSON.stringify(searchParams.entries()));
         const encodedUID = searchParams.get("encodedUID");
         if (encodedUID) {
           if (!liffObject || !liffObject.isLoggedIn()) {
