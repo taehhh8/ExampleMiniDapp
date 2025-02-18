@@ -153,6 +153,7 @@ export const LiffProvider: React.FC<{ children: React.ReactNode }> = ({
         // invited by friends
 
         const searchParams = new URLSearchParams(window.location.href);
+        alert(JSON.stringify(searchParams));
         const encodedUID = searchParams.get("encodedUID");
         if (encodedUID) {
           if (!liffObject || !liffObject.isLoggedIn()) {
