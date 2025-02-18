@@ -160,10 +160,7 @@ export const LiffProvider: React.FC<{ children: React.ReactNode }> = ({
         // invited by friends
         if (window.location.search !== "") {
           const encodedUID = parseEncodedUID(window.location.search);
-          if (encodedUID) {
-            if (!liffObject || !liffObject.isLoggedIn()) {
-              return;
-            }
+          if (encodedUID && liffObject && liffObject.isLoggedIn()) {
             friends(
               encodedUID as string,
               liffObject.getAccessToken() as string
