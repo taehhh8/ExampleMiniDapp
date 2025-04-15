@@ -19,14 +19,10 @@ interface LiffContextType {
 
 const LiffContext = createContext<LiffContextType | undefined>(undefined);
 
-export const LiffProvider: React.FC<{ children: React.ReactNode }> = ({
-  children,
-}) => {
+export const LiffProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [liffObject, setLiffObject] = useState<typeof liff | null>(null);
   const [liffError, setLiffError] = useState(null);
-  const [dappPortalSDK, setDappPortalSDK] = useState<DappPortalSDK | null>(
-    null
-  );
+  const [dappPortalSDK, setDappPortalSDK] = useState<DappPortalSDK | null>(null);
   const [encodedUID, setEncodedUID] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
   const params = useParams();
@@ -83,9 +79,7 @@ export const LiffProvider: React.FC<{ children: React.ReactNode }> = ({
               action: {
                 type: "uri",
                 label: message.footerLabel,
-                uri:
-                  "https://liff.line.me/2006655154-K808DVbx?encodedUID=" +
-                  encodedUID,
+                uri: "https://liff.line.me/2006655154-K808DVbx?encodedUID=" + encodedUID,
               },
             },
           ],
@@ -102,18 +96,15 @@ export const LiffProvider: React.FC<{ children: React.ReactNode }> = ({
 
     let encodedUID;
     try {
-      const result = await fetch(
-        `${process.env.NEXT_PUBLIC_API_URL}/api/invite/encode`,
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            idToken: liff.getAccessToken(),
-          }),
-        }
-      ).then((res) => res.json());
+      const result = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/invite/encode`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          idToken: liff.getAccessToken(),
+        }),
+      }).then((res) => res.json());
       encodedUID = result.encodedUID;
     } catch (error) {
       alert("Error when encoding user ID");
